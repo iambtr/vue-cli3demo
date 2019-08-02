@@ -9,13 +9,13 @@ function resolve (dir) {
 module.exports = {
   lintOnSave: false,
   devServer: {
-    proxy: 'http://oms.xianfengsg.com:8086/warehousePicking-server/'
+    proxy: ''
   },
   chainWebpack: (config)=>{
     config.resolve.alias
         .set('@', resolve('src'))
   },
-  publicPath: process.env.NODE_ENV === 'production' ? '/breakage' : '/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/' : '/',
   css: {
     loaderOptions: {
       postcss: {

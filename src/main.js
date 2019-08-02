@@ -35,14 +35,13 @@ Vue.use(Tab)
 Vue.prototype.$dialog = Dialog
 Vue.prototype.$imagePreView = ImagePreview
 Toast.setDefaultOptions({duration:1500})
+
 const devUrl = 'http://10.128.12.52:8086/warehousePicking-server/'
 const proUrl = 'http://oms.xianfengsg.com:8086/warehousePicking-server/'
-// 192.168.1.117/warehousePicking-server
+
 console.log(process.env.NODE_ENV)
-// const url = process.env.NODE_ENV !== 'production'?'http://10.128.12.115:8086/warehousePicking-server':'http://116.62.188.220:8086/warehousePicking-server/'
 const url = process.env.NODE_ENV !== 'production'?devUrl:proUrl
 
-// axios.defaults.baseURL = url
 process.env.NODE_ENV !== 'production'?'':axios.defaults.baseURL = url
 process.uploadUrl = url
 
