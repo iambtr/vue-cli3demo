@@ -2,7 +2,7 @@
     <div>
         <van-button  style="width: 100%" type="primary" >登录</van-button>
         <van-button  style="width: 100%" type="default" >登录</van-button>
-
+1111
     </div>
 </template>
 
