@@ -2,7 +2,7 @@
     box-sizing: border-box;
 }
 html{
-    background: rgba(234, 234, 234, 0.35);
+    background: #f5f5f5;
 }
 html,body,#app,.main{
     height: 100%;
