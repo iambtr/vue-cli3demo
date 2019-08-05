@@ -30,6 +30,7 @@ module.exports = {
             },
             less: {
                 modifyVars: {
+                    'progress-background-color':'#D9952B',
                     'text-color': '#333',
                     'tabbar-item-active-color': '#666',
                     // 'button-primary-height': '40px',

@@ -20,7 +20,7 @@
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-
+        font-size: 12px;
     }
 
     .van-nav-bar {
@@ -39,7 +39,8 @@
         background-color: rgba(0, 0, 0, 0.5);
         z-index: 2;
     }
-    .van-tabbar-item__icon img{
+
+    .van-tabbar-item__icon img {
         width: 26px;
         height: 26px;
     }
