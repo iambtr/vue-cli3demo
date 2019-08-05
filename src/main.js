@@ -6,14 +6,15 @@ import axios from 'axios'
 import 'amfe-flexible';
 import './assets/css/base.css'
 
-
 import { NavBar,TreeSelect,Button,Uploader,Icon,Stepper,DatetimePicker,Popup,
   Cell, CellGroup,Panel,Dialog,Toast ,Loading,ImagePreview,PullRefresh,Picker,
-  List,Field,Tabs,Tab} from 'vant';
+  List,Field,Tabs,Tab,Tabbar, TabbarItem} from 'vant';
 
-Vue.use(NavBar);
-Vue.use(TreeSelect);
-Vue.use(Button);
+Vue.use(Tabbar)
+Vue.use(TabbarItem)
+Vue.use(NavBar)
+Vue.use(TreeSelect)
+Vue.use(Button)
 Vue.use(Uploader)
 Vue.use(Icon)
 Vue.use(Stepper)
