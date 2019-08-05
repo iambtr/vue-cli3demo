@@ -6,9 +6,17 @@ import axios from 'axios'
 import 'amfe-flexible';
 import './assets/css/base.css'
 
-import { NavBar,TreeSelect,Button,Uploader,Icon,Stepper,DatetimePicker,Popup,
-  Cell, CellGroup,Panel,Dialog,Toast ,Loading,ImagePreview,PullRefresh,Picker,
-  List,Field,Tabs,Tab,Tabbar, TabbarItem} from 'vant';
+//全局goBack
+import goBack from './mixins/goBack'
+
+Vue.mixin(goBack)
+
+
+import {
+    NavBar, TreeSelect, Button, Uploader, Icon, Stepper, DatetimePicker, Popup,
+    Cell, CellGroup, Panel, Dialog, Toast, Loading, ImagePreview, PullRefresh, Picker,
+    List, Field, Tabs, Tab, Tabbar, TabbarItem
+} from 'vant';
 
 Vue.use(Tabbar)
 Vue.use(TabbarItem)
@@ -35,73 +43,77 @@ Vue.use(Tabs)
 Vue.use(Tab)
 Vue.prototype.$dialog = Dialog
 Vue.prototype.$imagePreView = ImagePreview
-Toast.setDefaultOptions({duration:1500})
+Toast.setDefaultOptions({duration: 1500})
 
 const devUrl = 'http://10.128.12.52:8086/warehousePicking-server/'
 const proUrl = 'http://oms.xianfengsg.com:8086/warehousePicking-server/'
 
 console.log(process.env.NODE_ENV)
-const url = process.env.NODE_ENV !== 'production'?devUrl:proUrl
+const url = process.env.NODE_ENV !== 'production' ? devUrl : proUrl
 
-process.env.NODE_ENV !== 'production'?'':axios.defaults.baseURL = url
+process.env.NODE_ENV !== 'production' ? '' : axios.defaults.baseURL = url
 process.uploadUrl = url
 
 Vue.config.productionTip = false
 axios.defaults.timeout = 600000;
 axios.defaults.headers['Content-Type'] = 'application/json; charset=utf-8'
 axios.interceptors.request.use((config) => {
-  store.commit('loading',true)
-  config.headers['token'] = sessionStorage.getItem('token') // 请求头带上token
-  return config;
+    store.commit('loading', true)
+    config.headers['token'] = sessionStorage.getItem('token') // 请求头带上token
+    return config;
 }, (error) => {
-  // Do something with request error
-  return Promise.reject(error);
+    // Do something with request error
+    return Promise.reject(error);
 });
 axios.interceptors.response.use((response) => {
-  // Do something before request is sent
-  if(response.data.code!==0){
-    Toast(response.data.msg)
-  }
-  store.commit('loading',false)
+    // Do something before request is sent
+    if (response.data && response.data.code !== 0) {
+        Toast(response.data.msg)
+        if (response.data.code === 401) { // 401, token失效
+            sessionStorage.removeItem('token')
+            router.push({name: 'login'})
+        }
+    }
+    store.commit('loading', false)
 
-  return response;
+    return response;
 }, (error) => {
-  console.log(error)
-  store.commit('loading',false)
+    console.log(error)
+    store.commit('loading', false)
 
-  return Promise.reject(error);
+    return Promise.reject(error);
 })
 
-const get = (url, params={}) => {
-  return new Promise(resolve => {
-    axios
-        .get(url, {params: params})
-        .then(response => resolve(response.data))
-        .catch( err => console.log(err))
-  })
+const get = (url, params = {}) => {
+    return new Promise(resolve => {
+        axios
+            .get(url, {params: params})
+            .then(response => resolve(response.data))
+            .catch(err => console.log(err))
+    })
 }
-const post = (url, params={}) => {
-  return new Promise(resolve => {
-    axios
-        .post(url, JSON.stringify(params))
-        .then(response => resolve(response.data))
-        .catch( err => console.log(err))
-  })
+const post = (url, params = {}) => {
+    return new Promise(resolve => {
+        axios
+            .post(url, JSON.stringify(params))
+            .then(response => resolve(response.data))
+            .catch(err => console.log(err))
+    })
 }
-const put = (url, params={}) => {
-  return new Promise(resolve => {
-    axios
-        .put(url, JSON.stringify(params))
-        .then(response => resolve(response.data))
-        .catch( err => console.log(err))
-  })
+const put = (url, params = {}) => {
+    return new Promise(resolve => {
+        axios
+            .put(url, JSON.stringify(params))
+            .then(response => resolve(response.data))
+            .catch(err => console.log(err))
+    })
 }
 Vue.prototype.$get = get
 Vue.prototype.$post = post
 Vue.prototype.$put = put
 
 new Vue({
-  router,
-  store,
-  render: h => h(App)
+    router,
+    store,
+    render: h => h(App)
 }).$mount('#app')

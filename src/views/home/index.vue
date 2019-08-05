@@ -1,7 +1,8 @@
 <template>
     <div>
-        home
-        <van-button type="default">默认按钮</van-button>
+        <van-nav-bar
+                title="小果攻CRM"
+        />
     </div>
 </template>
 
@@ -10,7 +11,11 @@
         data() {
             return {}
         },
-        methods: {},
+        methods: {
+            onClickRight(){
+
+            }
+        },
         created() {
         }
     }

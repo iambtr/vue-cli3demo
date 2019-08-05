@@ -8,7 +8,8 @@ module.exports = {
     ['import', {
       libraryName: 'vant',
       libraryDirectory: 'es',
-      style: true
+      style: name => `${name}/style/less`
     }, 'vant']
   ]
+
 }
