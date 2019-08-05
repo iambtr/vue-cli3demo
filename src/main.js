@@ -15,9 +15,9 @@ Vue.mixin(goBack)
 import {
     NavBar, TreeSelect, Button, Uploader, Icon, Stepper, DatetimePicker, Popup,
     Cell, CellGroup, Panel, Dialog, Toast, Loading, ImagePreview, PullRefresh, Picker,
-    List, Field, Tabs, Tab, Tabbar, TabbarItem
+    List, Field, Tabs, Tab, Tabbar, TabbarItem,Progress
 } from 'vant';
-
+Vue.use(Progress)
 Vue.use(Tabbar)
 Vue.use(TabbarItem)
 Vue.use(NavBar)
