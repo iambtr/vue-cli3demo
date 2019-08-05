@@ -15,7 +15,7 @@ Vue.mixin(goBack)
 import {
     NavBar, TreeSelect, Button, Uploader, Icon, Stepper, DatetimePicker, Popup,
     Cell, CellGroup, Panel, Dialog, Toast, Loading, ImagePreview, PullRefresh, Picker,
-    List, Field, Tabs, Tab, Tabbar, TabbarItem
+    List, Field, Tabs, Tab, Tabbar, TabbarItem,Grid, GridItem
 } from 'vant';
 
 Vue.use(Tabbar)
@@ -40,7 +40,8 @@ Vue.use(Picker)
 Vue.use(List)
 Vue.use(Field)
 Vue.use(Tabs)
-Vue.use(Tab)
+Vue.use(Grid)
+Vue.use(GridItem)
 Vue.prototype.$dialog = Dialog
 Vue.prototype.$imagePreView = ImagePreview
 Toast.setDefaultOptions({duration: 1500})
