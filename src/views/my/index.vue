@@ -1,7 +1,11 @@
 <template>
   <div class="body">
     <div class="header">
-      <img src alt class="avator" />
+      <img
+        src="https://xianfengapp.oss-cn-hangzhou.aliyuncs.com/xiaoguogong/nav1.png"
+        alt
+        class="avator"
+      />
       <div class="info">
         <div>{{userInfo.name}}</div>
         <!-- <div class="p">{{userInfo.des}}</div> -->
@@ -13,7 +17,7 @@
         <van-grid :border="false" :column-num="4">
           <van-grid-item v-for="item in navs" :key="item.name" icon="photo-o" text="文字">
             <img :src="item.icon" alt class="icon" />
-            <span class="badge" v-if="item.badge">{{item.badge}}</span>
+            <span class="badge" v-if="item.badge">{{item.badge|badgeFilter}}</span>
             <div class="name">{{item.name}}</div>
           </van-grid-item>
         </van-grid>
@@ -40,13 +44,13 @@ export default {
           name: "已掉落",
           icon:
             "https://xianfengapp.oss-cn-hangzhou.aliyuncs.com/xiaoguogong/nav2.png",
-          badge: "2"
+          badge: "20"
         },
         {
           name: "已拾取",
           icon:
             "https://xianfengapp.oss-cn-hangzhou.aliyuncs.com/xiaoguogong/nav3.png",
-          badge: "2"
+          badge: "2011"
         },
         {
           name: "注册未下单",
@@ -58,10 +62,15 @@ export default {
           name: "即将掉落",
           icon:
             "https://xianfengapp.oss-cn-hangzhou.aliyuncs.com/xiaoguogong/nav5.png",
-          badge: "2"
+          badge: "20"
         }
       ]
     };
+  },
+  filters: {
+    badgeFilter(val) {
+      return val > 99 ? 99 : val;
+    }
   },
   methods: {},
   created() {}
@@ -119,10 +128,11 @@ export default {
     }
     .badge {
       position: absolute;
-      top: 0px;
-      right: 0px;
+      top: 18px;
+      right: 12px;
       height: 19px;
       background: rgba(255, 121, 91, 1);
+      font-weight: bolder;
       border-radius: 3px 3px 3px 0px;
       border: 1px solid rgba(255, 255, 255, 1);
       height: 17px;
@@ -130,6 +140,7 @@ export default {
       font-weight: bolder;
       color: rgba(255, 255, 255, 1);
       line-height: 17px;
+      padding: 0 7px;
     }
     .name {
       height: 17px;
