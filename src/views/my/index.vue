@@ -15,7 +15,7 @@
       <div class="title">客户动态</div>
       <div>
         <van-grid :border="false" :column-num="4">
-          <van-grid-item v-for="item in navs" :key="item.name" icon="photo-o" text="文字">
+          <van-grid-item v-for="item in navs" :key="item.name" :to="item.link">
             <img :src="item.icon" alt class="icon" />
             <span class="badge" v-if="item.badge">{{item.badge|badgeFilter}}</span>
             <div class="name">{{item.name}}</div>
@@ -35,30 +35,45 @@ export default {
       },
       navs: [
         {
+          link: {
+            name: ""
+          },
           name: "客户库容",
           icon:
             "https://xianfengapp.oss-cn-hangzhou.aliyuncs.com/xiaoguogong/nav1.png",
           badge: ""
         },
         {
+          link: {
+            name: "storeNoPicked"
+          },
           name: "已掉落",
           icon:
             "https://xianfengapp.oss-cn-hangzhou.aliyuncs.com/xiaoguogong/nav2.png",
           badge: "20"
         },
         {
+          link: {
+            name: "storePicked"
+          },
           name: "已拾取",
           icon:
             "https://xianfengapp.oss-cn-hangzhou.aliyuncs.com/xiaoguogong/nav3.png",
           badge: "2011"
         },
         {
+          link: {
+            name: ""
+          },
           name: "注册未下单",
           icon:
             "https://xianfengapp.oss-cn-hangzhou.aliyuncs.com/xiaoguogong/nav4.png",
           badge: "2"
         },
         {
+          link: {
+            name: ""
+          },
           name: "即将掉落",
           icon:
             "https://xianfengapp.oss-cn-hangzhou.aliyuncs.com/xiaoguogong/nav5.png",
