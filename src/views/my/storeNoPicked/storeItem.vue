@@ -8,10 +8,10 @@
       <span class="divider"></span>
       <div class="right">
         <img src="./img/phone.png" alt />
-        <div class>{{store.contanct}}</div>
+        <div class="name">{{store.contanct}}</div>
       </div>
     </div>
-    <div>
+    <div class="bottom">
       <img src="./img/navigation.png" alt />
       <span>{{store.distance}}km{{store.address}}</span>
     </div>
@@ -56,10 +56,13 @@ export default {
   .top {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 10px;
+    align-items: center;
     .left {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
+      flex:1;
       .store-name {
         height: 20px;
         font-size: 14px;
@@ -73,12 +76,45 @@ export default {
       //   width: 34px;
       // }
     }
-    .right{
-      img{
+    .right {
+      margin-left: 14px;
+      text-align: center;
+      img {
         width: 14px;
         height: 14px;
+        margin-bottom: 2px;
+      }
+      .name {
+        height: 17px;
+        font-size: 12px;
+        font-family: PingFangSC-Regular;
+        font-weight: 400;
+        color: rgba(51, 51, 51, 1);
+        line-height: 17px;
       }
     }
+  }
+  .divider{
+    height: 12px;
+    width: 1px;
+    background-color: #E5E5E5;
+  }
+  .bottom {
+    height: 27px;
+    background: rgba(245, 248, 250, 1);
+    border-radius: 2px;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    img {
+      width: 10px;
+      height: 10px;
+      margin-right: 5px;
+    }
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(161, 170, 184, 1);
+    line-height: 17px;
   }
 }
 </style>
