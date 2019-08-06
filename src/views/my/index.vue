@@ -72,7 +72,7 @@ export default {
         },
         {
           link: {
-            name: ""
+            name: "storePickedPedding"
           },
           name: "即将掉落",
           icon:
