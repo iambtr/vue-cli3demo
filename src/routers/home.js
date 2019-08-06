@@ -9,7 +9,18 @@ export default [
                 name:'home',
                 path:'/home',
                 component: () => import('@/views/home/index')
-            }
+            },
+
         ]
     },
+    {
+        name:'newUserReview',
+        path:'/newUserReview',
+        component: () => import('@/views/home/newUser')
+    },
+    {
+        name:'visitList',
+        path:'/visitList',
+        component: () => import('@/views/home/visitList')
+    }
 ]

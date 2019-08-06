@@ -17,7 +17,7 @@
 </script>
 <style lang="less">
     #app {
-        font-family: 'Avenir', Helvetica, Arial, sans-serif;
+        font-family:PingFangSC-Medium,'Avenir', Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         font-size: 12px;
