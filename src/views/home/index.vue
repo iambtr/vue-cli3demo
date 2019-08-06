@@ -1,9 +1,10 @@
 <template>
     <div>
         <van-nav-bar
+                fixed
                 title="小果攻CRM"
         />
-        <div class="flex  flex-column top ">
+        <div class="flex  flex-column top marginTop">
             <div class="">订单总额</div>
             <div class="money">12091.62 <span class="yuan">元</span></div>
             <van-progress class="progress"
@@ -159,8 +160,6 @@
             }
 
             .dian {
-
-
                 & > div {
                     border-radius: 50%;
                     width: 4px;

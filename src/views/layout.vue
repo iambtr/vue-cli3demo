@@ -47,7 +47,6 @@
                 >
             </van-tabbar-item>
         </van-tabbar>
-
     </div>
 </template>
 
@@ -83,5 +82,6 @@
 <style scoped>
     .main-view {
         min-height: 100%;
+        position: relative;
     }
 </style>
