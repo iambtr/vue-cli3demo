@@ -22,5 +22,10 @@ export default [
         name:'visitList',
         path:'/visitList',
         component: () => import('@/views/home/visitList')
+    },
+    {
+        name:'location',
+        path:'/location',
+        component: () => import('@/views/home/location')
     }
 ]

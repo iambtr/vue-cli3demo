@@ -1,12 +1,14 @@
 <template>
     <div>
         <van-nav-bar
+                fixed
                 title="新用户审核"
                 left-arrow
                 @click-left="onClickLeft"
         >
         </van-nav-bar>
         <van-search
+                class="marginTop"
                 v-model="searchValue"
                 placeholder="搜索门店/代码/联系人"
                 show-action

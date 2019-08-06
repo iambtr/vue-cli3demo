@@ -1,12 +1,14 @@
 <template>
     <div>
         <van-nav-bar
+                fixed
                 title="拜访计划列表"
                 left-arrow
                 @click-left="onClickLeft"
         >
         </van-nav-bar>
         <van-search
+                class="marginTop"
                 v-model="searchValue"
                 placeholder="搜索门店/代码/联系人"
                 show-action
@@ -37,7 +39,7 @@
                         <img :src="location" alt="">
                         <div>定位</div>
                     </div>
-                    <div class="flex-1">
+                    <div class="flex-1" @click="$router.push({name:'location'})">
                         <img :src="sign" alt="">
                         <div>我要签到</div>
                     </div>
@@ -112,6 +114,7 @@
                 location,
                 sign,
                 tell,
+
                 searchValue: '',
                 value1: 0,
                 option1: [
