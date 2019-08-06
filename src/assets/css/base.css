@@ -29,6 +29,9 @@ html,body,#app,.main{
 .flex-between{
     justify-content: space-between;
 }
+.flex-end{
+    justify-content: flex-end;
+}
 .padding10{
     padding: 0 10px;
 }
@@ -49,4 +52,14 @@ html,body,#app,.main{
 
 .active {
     background: #fff;
+}
+.list-container{
+    padding: 15px;
+    margin-bottom: 40px;
+}
+.list{
+    border-radius:4px;
+    padding: 10px 15px;
+    background: #ffffff;
+    margin-bottom: 10px;
 }
