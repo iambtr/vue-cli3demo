@@ -15,6 +15,7 @@
       <img src="./img/navigation.png" alt />
       <span>{{store.distance}}km{{store.address}}</span>
     </div>
+    <slot />
   </div>
 </template>
 <script>
