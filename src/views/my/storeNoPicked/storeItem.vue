@@ -6,10 +6,10 @@
         <img :src="img" alt />
       </div>
       <span class="divider"></span>
-      <div class="right">
+      <a class="right" :href="'tel:'+store.phone">
         <img src="./img/phone.png" alt />
         <div class="name">{{store.contanct}}</div>
-      </div>
+      </a>
     </div>
     <div class="bottom">
       <img src="./img/navigation.png" alt />
@@ -62,7 +62,7 @@ export default {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      flex:1;
+      flex: 1;
       .store-name {
         height: 20px;
         font-size: 14px;
@@ -94,10 +94,10 @@ export default {
       }
     }
   }
-  .divider{
+  .divider {
     height: 12px;
     width: 1px;
-    background-color: #E5E5E5;
+    background-color: #e5e5e5;
   }
   .bottom {
     height: 27px;

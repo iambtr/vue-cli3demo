@@ -59,7 +59,7 @@ export default {
         {
           id:2,
           name:'鲜康水果店-09087208',
-          phone:'400-2323-323',
+          phone:'15372005595',
           contanct:'张丽丽2',
           status:'1',//1 已掉落 2 已拾取 3即将掉落
           address:'杭州市拱墅区三墩路85号',
@@ -87,7 +87,6 @@ export default {
       this.$toast("菜单");
     },
     changeItem(item, inx) {
-      console.log(item, inx);
       let newNavs = this.navs.map(elt=>{
         elt.active=false
         return elt

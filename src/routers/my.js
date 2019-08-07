@@ -20,6 +20,11 @@ export default [
                 path:'/my/storePicked',
                 component: () => import('@/views/my/storePicked/index')
             },
+            {
+                name:'storePickedPedding',
+                path:'/my/storePickedPedding',
+                component: () => import('@/views/my/storePickedPedding/index')
+            },
         ]
     },
 ]
