@@ -56,53 +56,29 @@
                     </div>
                 </div>
             </div>
-            <div class="more flex flex-between">
+            <div class="more flex flex-between" @click="$router.push({name:'skuList'})">
                 <div>近30天购买SKU</div>
                 <div class="more1">查看更多
                     <van-icon name="arrow"></van-icon>
                 </div>
             </div>
             <div class="sku-view">
-                <div class="sku-item">
-                    <div class="flex flex-between">
-                        <div class="disc">商品名称描述</div>
-                        <div class="buy-time">购买次数：<span class="color">15</span></div>
-                    </div>
-                    <div>单价：¥500.90 代码：0000001</div>
-                </div>
-                <div class="sku-item">
-                    <div class="flex flex-between">
-                        <div class="disc">商品名称描述</div>
-                        <div class="buy-time">购买次数：<span class="color">15</span></div>
-                    </div>
-                    <div>单价：¥500.90 代码：0000001</div>
-                </div>
+                <skuItem></skuItem>
+                <skuItem></skuItem>
             </div>
-            <div class="more flex flex-between">
+            <div class="more flex flex-between" @click="$router.push({name:'orderList'})">
                 <div>近30天订单记录</div>
                 <div class="more1">查看更多
                     <van-icon name="arrow"></van-icon>
                 </div>
             </div>
-            <div class="order-view">
-                <div class="order-top flex-between flex">
-                    <div>2019.7.24 下午09:59:27</div>
-                    <div>已完成</div>
-                </div>
-                <div class="order-box flex flex-center">
-                    <img :src="fruit" alt="">
-                    <img :src="fruit" alt="">
-                    <img :src="fruit" alt="">
-                    <img :src="fruit" alt="">
-                    共20件
-                </div>
-                <div class="really-pay">实付：<span class="money">&yen;23.30</span></div>
-            </div>
+
+            <orderItem></orderItem>
             <div class="more flex flex-between">
                 <div>最近7次订单评价</div>
-                <div class="more1">查看更多
-                    <van-icon name="arrow"></van-icon>
-                </div>
+                <!--<div class="more1">查看更多-->
+                    <!--<van-icon name="arrow"></van-icon>-->
+                <!--</div>-->
             </div>
             <div class="star-view">
                 <div class="star-item">
@@ -137,7 +113,16 @@
                 cancelButtonColor="#666666"
                 confirm-button-color="#fff"
         >
-
+           <div class="flex choose-view">
+               <div class="choose-item"
+                    v-for="item,index in timeChoose" :key="index"
+                    :class="{'active':item.active}"
+                    @click="changeChooseItem(index)"
+               >
+                   <div class="choose-name">{{item.name}}</div>
+                   <div>{{item.value}}</div>
+               </div>
+           </div>
         </van-dialog>
         <van-button type="primary"  class="btn">拾取客户</van-button>
         <van-button type="primary"  class="btn">去审核</van-button>
@@ -146,22 +131,52 @@
 </template>
 
 <script>
+    import getYYR from '../../../mixins/getYYR'
     import phone from '../../my/storeNoPicked/img/phone.png'
     import position from '$img/postion.png'
     import fruit from '$img/fruit.png'
+    import skuItem from './skuItem'
+    import orderItem from './orderItem'
     export default {
+        mixins:[getYYR],
+        components:{skuItem,orderItem},
         data() {
             return {
                 phone,
                 position,
                 fruit,
                 value: 2.6,
-                show:false
+                show:false,
+                timeChoose:[
+                    {
+                        active:true,
+                        name:'今日拜访',
+                        value:this.getYYR(new Date())
+                    },
+                    {
+                        active:false,
+                        name:'明日拜访',
+                        value:this.getDate()
+                    }
+                ]
             }
         },
         methods: {
             onClickRight() {
                 this.$router.push({name: 'visitList'})
+            },
+            getDate(){
+                let now = new Date()
+                let t =  new Date((now/1000+86400)*1000)
+                console.log(t)
+                let now1 = this.getYYR(t)
+                return now1
+            },
+            changeChooseItem(index){
+                this.timeChoose.map(item=>{
+                    return item.active = false
+                })
+                this.timeChoose[index].active = true
             }
         },
         created() {
@@ -320,69 +335,6 @@
             color: #c1c1c1;
         }
     }
-
-    .sku-item {
-        padding: 12px 15px;
-        background: #ffffff;
-        color: #999;
-        border-radius: 3px;
-        align-items: center;
-
-        .disc {
-            color: #333;
-            font-size: 14px;
-        }
-
-        .buy-time {
-            font-size: 13px;
-
-            .color {
-                color: #333;
-            }
-        }
-    }
-
-    .sku-item:not(:last-child) {
-        margin-bottom: 10px;
-    }
-
-    .order-view {
-        padding: 15px;
-        border-radius: 3px;
-        background: #ffffff;
-
-        .order-top {
-            color: #666;
-        }
-
-        .order-box {
-            background: rgba(250, 250, 250, 1);
-            border-radius: 3px;
-            border: 1px solid rgba(245, 245, 245, 1);
-            padding: 20px 7px 20px 10px;
-            margin: 10px 0;
-            font-size: 12px;
-            color: #666;
-
-            img {
-                width: 56px;
-                height: 56px;
-                margin-right: 10px;
-            }
-        }
-
-        .really-pay {
-            color: #999;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-
-            .money {
-                color: #333;
-                font-size: 16px;
-            }
-        }
-    }
     .star-item {
         background: #ffffff;
         border-radius: 3px;
@@ -401,5 +353,34 @@
         right: 50%;
         margin-left: -150px;
         bottom: 10px;
+    }
+    .choose-item{
+        width:128px;
+        height:60px;
+        background:rgba(250,250,250,1);
+        border-radius:3px;
+        border:1px solid rgba(229,229,229,1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        color: #666;
+        .choose-name{
+            font-size: 14px;
+        }
+    }
+    .active{
+        color:#FF8339;
+        background: rgba(255,131,57,0.1);
+        border:1px solid rgba(255,131,57,0.3);
+    }
+    .choose-item:first-child{
+        margin-right: 20px;
+    }
+    .choose-view{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 20px 0;
     }
 </style>

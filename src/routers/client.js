@@ -16,5 +16,15 @@ export default [
         path: '/clientInfo',
         name: 'clientInfo',
         component: () => import('@/views/client/info/index')
+    },
+    {
+        path: '/skuList',
+        name: 'skuList',
+        component: () => import('@/views/client/info/skuList')
+    },
+    {
+        path: '/orderList',
+        name: 'orderList',
+        component: () => import('@/views/client/info/orderList')
     }
 ]
