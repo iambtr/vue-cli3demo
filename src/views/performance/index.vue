@@ -1,7 +1,7 @@
 <template>
     <div class="view">
         <van-nav-bar
-                title="标题"
+                title="个人业绩"
         />
         <div class="container">
             <div class="tabs">
@@ -91,7 +91,7 @@
         top: 0;
     }
     .container {
-        height: 100%;
+        /*height: 100%;*/
         padding-top: 10px;
         /*padding-left: 10px;*/
         /*padding-right: 10px;*/
