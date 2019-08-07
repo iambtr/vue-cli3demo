@@ -10,8 +10,9 @@ html,body,#app,.main{
     margin: 0;
 }
 .scroll{
-    transform: translate3d(0,0,0);
-    -webkit-overflow-scrolling: touch
+    overflow: scroll;
+    -webkit-transform: translateZ(0px);
+    -webkit-overflow-scrolling: touch;
 }
 .flex{
     display: flex;
@@ -66,3 +67,18 @@ html,body,#app,.main{
 .marginTop{
     margin-top: 46px;
 }
+.van-dialog__cancel{
+    background-color: #F5F5F5 !important;
+}
+.van-dialog__cancel:before{
+    background-color: #F5F5F5;
+    border-color: #F5F5F5;
+}
+.van-dialog__confirm{
+    background-color: #FF8339 !important;
+}
+.van-dialog__confirm:before{
+    background-color: #FF8339;
+    border-color: #FF8339;
+}
+
