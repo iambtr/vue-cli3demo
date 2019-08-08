@@ -5,10 +5,12 @@ import store from './store'
 import axios from 'axios'
 import 'amfe-flexible';
 import './assets/css/base.css'
-
+import * as dd from 'dingtalk-jsapi'
+import {get,post,put} from './http'
+Vue.prototype.$dd = dd
 //全局goBack
 import goBack from './mixins/goBack'
-import * as dd from 'dingtalk-jsapi'; 
+
 Vue.mixin(goBack)
 
 
@@ -91,30 +93,6 @@ axios.interceptors.response.use((response) => {
     return Promise.reject(error);
 })
 
-const get = (url, params = {}) => {
-    return new Promise(resolve => {
-        axios
-            .get(url, {params: params})
-            .then(response => resolve(response.data))
-            .catch(err => console.log(err))
-    })
-}
-const post = (url, params = {}) => {
-    return new Promise(resolve => {
-        axios
-            .post(url, JSON.stringify(params))
-            .then(response => resolve(response.data))
-            .catch(err => console.log(err))
-    })
-}
-const put = (url, params = {}) => {
-    return new Promise(resolve => {
-        axios
-            .put(url, JSON.stringify(params))
-            .then(response => resolve(response.data))
-            .catch(err => console.log(err))
-    })
-}
 Vue.prototype.$get = get
 Vue.prototype.$post = post
 Vue.prototype.$put = put

@@ -42,7 +42,7 @@
                 <p>注册</p>
                 <div><span class="red">15</span>/30</div>
             </div>
-            <div class="flex flex-column flex-center">
+            <div class="flex flex-column flex-center" @click="$router.push({name:'performance'})">
                 <p>查看更多</p>
                 <div class="flex dian">
                     <div></div>

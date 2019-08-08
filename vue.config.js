@@ -9,7 +9,7 @@ function resolve(dir) {
 module.exports = {
     lintOnSave: false,
     devServer: {
-        proxy: ''
+        proxy: 'http://120.26.50.233:8186/xftob-server'
     },
     chainWebpack: (config) => {
         config.resolve.alias

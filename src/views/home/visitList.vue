@@ -16,8 +16,8 @@
                 @cancel="onCancel"
         />
         <van-dropdown-menu class="dropdown">
-            <van-dropdown-item v-model="value1" :options="option1"/>
-            <van-dropdown-item v-model="value2" :options="option2"/>
+            <van-dropdown-item v-model="searchValues.visitDtType" :options="option1"/>
+            <van-dropdown-item v-model="searchValues.visitStus" :options="option2"/>
         </van-dropdown-menu>
         <div class="list-container">
             <div class="list">
@@ -127,7 +127,13 @@
                     {text: '未拜访', value: 0},
                     {text: '拜访中', value: 1},
                     {text: '已拜访', value: 2},
-                ]
+                ],
+                searchValues:{
+                    currPage:1,
+                    limit:10,
+                    visitDtType:'',
+                    visitStus:''
+                }
             }
         },
         methods: {
@@ -136,9 +142,15 @@
             },
             onCancel() {
 
+            },
+            getList(){
+                this.$get('/visit/app/visitPlan/getList',this.searchValues).then((res)=>{
+
+                })
             }
         },
         created() {
+            this.getList()
         }
     }
 </script>
