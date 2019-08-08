@@ -20,10 +20,18 @@
     <div class="store-list">
       <store-item v-for="store in storeList" :store="store" :key="store.id"></store-item>
     </div>
+    <van-popup v-model="dateShow" position="bottom">
+      <van-datetime-picker
+        v-model="currentDate"
+        type="date"
+        @confirm="chooseDate"
+        @cancel="dateShow=false"
+      />
+    </van-popup>
   </div>
 </template>
 <script>
-import storeItem from './storeItem'
+import storeItem from "./storeItem";
 export default {
   data() {
     return {
@@ -46,53 +54,63 @@ export default {
         }
       ],
       query: "",
-      storeList:[
+      currentDate: new Date(),
+      dateShow: false,
+      storeList: [
         {
-          id:1,
-          name:'鲜康水果店-09087208',
-          phone:'400-2323-323',
-          contanct:'张丽丽',
-          status:'1',//1 已掉落 2 已拾取 3即将掉落
-          address:'杭州市拱墅区三墩路85号',
-          distance:'13.3'
+          id: 1,
+          name: "鲜康水果店-09087208",
+          phone: "400-2323-323",
+          contanct: "张丽丽",
+          status: "1", //1 已掉落 2 已拾取 3即将掉落
+          address: "杭州市拱墅区三墩路85号",
+          distance: "13.3"
         },
         {
-          id:2,
-          name:'鲜康水果店-09087208',
-          phone:'15372005595',
-          contanct:'张丽丽2',
-          status:'1',//1 已掉落 2 已拾取 3即将掉落
-          address:'杭州市拱墅区三墩路85号',
-          distance:'13.4'
-        },
+          id: 2,
+          name: "鲜康水果店-09087208",
+          phone: "15372005595",
+          contanct: "张丽丽2",
+          status: "1", //1 已掉落 2 已拾取 3即将掉落
+          address: "杭州市拱墅区三墩路85号",
+          distance: "13.4"
+        }
       ]
     };
   },
-  computed:{
-    queryValue(){
-      return this.navs.find(nav=>nav.active)
+  computed: {
+    queryValue() {
+      return this.navs.find(nav => nav.active);
     }
   },
-  components:{storeItem},
+  components: { storeItem },
   filters: {
     badgeFilter(val) {
       return val > 99 ? 99 : val;
     }
   },
   methods: {
-    onClickLeft() {
-      this.$router.back();
-    },
     onClickRight() {
       this.$toast("菜单");
     },
     changeItem(item, inx) {
-      let newNavs = this.navs.map(elt=>{
-        elt.active=false
-        return elt
-      })
-      newNavs[inx] = Object.assign({},item,{active:true})
-      this.navs = newNavs
+      let newNavs = this.navs.map(elt => {
+        elt.active = false;
+        return elt;
+      });
+      newNavs[inx] = Object.assign({}, item, { active: true });
+      if (inx === 3) {
+        this.showDatePicker();
+      }
+      this.navs = newNavs;
+    },
+    showDatePicker(item, inx) {
+      this.dateShow = true;
+    },
+    chooseDate(e) {
+      console.log(e);
+      this.currentDate = e;
+      this.dateShow=false
     }
   },
   created() {}
@@ -114,12 +132,12 @@ export default {
     font-weight: 400;
     color: rgba(27, 27, 29, 1);
     line-height: 40px;
-    .tab-item{
+    .tab-item {
       flex: 1;
       text-align: center;
     }
-    .active{
-      color: #FF8239;
+    .active {
+      color: #ff8239;
     }
   }
 }

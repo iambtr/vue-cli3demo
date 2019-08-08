@@ -6,10 +6,10 @@
         <img :src="img" alt />
       </div>
       <span class="divider"></span>
-      <a class="right" :href="'tel:'+store.phone">
+      <div class="right" @click.capture="callPhone(store.phone)">
         <img src="./img/phone.png" alt />
         <div class="name">{{store.contanct}}</div>
-      </a>
+      </div>
     </div>
     <div class="bottom">
       <img src="./img/navigation.png" alt />
@@ -28,7 +28,8 @@ export default {
   },
   data() {
     return {
-      img: require("./img/status" + this.store.status + ".png")
+      img: require("./img/status" + this.store.status + ".png"),
+      phoneShow:true,
     };
   },
   computed: {},
@@ -43,6 +44,9 @@ export default {
     },
     onClickRight() {
       this.$toast("菜单");
+    },
+    callPhone(phone){
+      this.$emit('callClick',phone)
     }
   },
   created() {}

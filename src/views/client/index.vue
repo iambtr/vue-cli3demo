@@ -77,20 +77,33 @@
         @load="loadData"
       >
         <div class="list-item" v-for="item in customers" :key="item.code">
-          <store-item :store="item">
-            <store-info :store="item"></store-info>
+          <store-item :store="item" @callClick="readyCallPhone">
+            <store-info :store="item" @click.native="$router.push({name:'clientInfo'})"></store-info>
             <van-button type="primary" block v-if="item.check&&!item.pickUp">去审核</van-button>
-            <van-button type="primary" block v-if="item.pickUp&&!item.check">拾取客户</van-button>
+            <van-button
+              type="primary"
+              block
+              v-if="item.pickUp&&!item.check"
+              @click="readyPickUp(item)"
+            >拾取客户</van-button>
           </store-item>
         </div>
       </van-list>
     </div>
+    <van-popup v-model="phonePop" round>
+      <pop confirmTxt="呼叫" :title="phone" @confirm="callPhone" @cancel="phonePop=false" />
+    </van-popup>
+    <van-popup v-model="pickPop" round>
+      <pop confirmTxt="确认拾取" title="是否拾取该用户" @confirm="pickUp" @cancel="pickPop=false" />
+    </van-popup>
   </div>
 </template>
 
 <script>
 import storeItem from "@/views/my/storeNoPicked/storeItem";
 import storeInfo from "./components/storeInfo";
+import pop from "@/views/my/storeNoPicked/pop";
+
 export default {
   data() {
     return {
@@ -181,7 +194,12 @@ export default {
           check: false,
           pickUp: true
         }
-      ]
+      ],
+      //弹框
+      phonePop: false,
+      phone: "",
+      pickItem: {},
+      pickPop: false
     };
   },
   computed: {
@@ -192,7 +210,7 @@ export default {
       return this[this.filterValue] || "";
     }
   },
-  components: { storeItem, storeInfo },
+  components: { storeItem, storeInfo, pop },
   methods: {
     changTabValue(type, val) {
       let initValue = {
@@ -227,6 +245,25 @@ export default {
         });
       }
       this.sorts = sorts;
+    },
+    toInfoIndex() {
+      this.$router.push({
+        name: "clientInfo"
+      });
+    },
+    readyCallPhone(e) {
+      this.phone = e;
+      this.phonePop = true;
+    },
+    callPhone() {
+      this.phonePop = false;
+    },
+    readyPickUp(e) {
+      this.pickItem = e;
+      this.pickPop = true;
+    },
+    pickUp(e) {
+      this.pickPop = false;
     },
     loadData() {}
   },

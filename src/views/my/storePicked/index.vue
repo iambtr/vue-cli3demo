@@ -81,9 +81,6 @@ export default {
   components: { storeItem },
 
   methods: {
-    onClickLeft() {
-      this.$router.back();
-    },
     onClickRight() {
       Toast("按钮");
     },
