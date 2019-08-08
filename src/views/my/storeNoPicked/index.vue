@@ -64,7 +64,9 @@ export default {
           contanct: "张丽丽",
           status: "1", //1 已掉落 2 已拾取 3即将掉落
           address: "杭州市拱墅区三墩路85号",
-          distance: "13.3"
+          distance: "13.3",
+          latitude: 30.319088, // POI的纬度
+          longitude: 120.106077 // POI的经度
         },
         {
           id: 2,
@@ -73,7 +75,9 @@ export default {
           contanct: "张丽丽2",
           status: "1", //1 已掉落 2 已拾取 3即将掉落
           address: "杭州市拱墅区三墩路85号",
-          distance: "13.4"
+          distance: "13.4",
+          latitude: 30.319088, // POI的纬度
+          longitude: 120.106077 // POI的经度
         }
       ]
     };
@@ -110,7 +114,7 @@ export default {
     chooseDate(e) {
       console.log(e);
       this.currentDate = e;
-      this.dateShow=false
+      this.dateShow = false;
     }
   },
   created() {}

@@ -8,7 +8,7 @@ import './assets/css/base.css'
 
 //全局goBack
 import goBack from './mixins/goBack'
-
+import * as dd from 'dingtalk-jsapi'; 
 Vue.mixin(goBack)
 
 
@@ -48,6 +48,7 @@ Vue.use(Tabs)
 Vue.use(Grid)
 Vue.use(GridItem)
 Vue.prototype.$dialog = Dialog
+Vue.prototype.$dd = dd
 Vue.prototype.$imagePreView = ImagePreview
 Toast.setDefaultOptions({duration: 1500})
 

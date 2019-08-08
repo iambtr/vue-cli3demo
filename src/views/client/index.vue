@@ -90,9 +90,6 @@
         </div>
       </van-list>
     </div>
-    <van-popup v-model="phonePop" round>
-      <pop confirmTxt="呼叫" :title="phone" @confirm="callPhone" @cancel="phonePop=false" />
-    </van-popup>
     <van-popup v-model="pickPop" round>
       <pop confirmTxt="确认拾取" title="是否拾取该用户" @confirm="pickUp" @cancel="pickPop=false" />
     </van-popup>
@@ -195,6 +192,10 @@ export default {
           pickUp: true
         }
       ],
+      location: {
+        longitude: Number,
+        latitude: Number
+      },
       //弹框
       phonePop: false,
       phone: "",
@@ -264,6 +265,52 @@ export default {
     },
     pickUp(e) {
       this.pickPop = false;
+    },
+    getLoction() {
+      let that = this;
+      that.$dd.ready(function() {
+        that.$dd.device.geolocation.get({
+          targetAccuracy: Number,
+          coordinate: Number,
+          withReGeocode: Boolean,
+          useCache: true, //默认是true，如果需要频繁获取地理位置，请设置false
+          onSuccess: function(result) {
+            /* 高德坐标 result 结构
+        {
+            longitude : Number,
+            latitude : Number,
+            accuracy : Number,
+            address : String,
+            province : String,
+            city : String,
+            district : String,
+            road : String,
+            netType : String,
+            operatorType : String,
+            errorMessage : String,
+            errorCode : Number,
+            isWifiEnabled : Boolean,
+            isGpsEnabled : Boolean,
+            isFromMock : Boolean,
+            provider : wifi|lbs|gps,
+            isMobileEnabled : Boolean
+        }
+        */
+            let city = null;
+            if (result.city) {
+              city = result.city;
+            } else {
+              city = result.province;
+            }
+            that.cityValue = that.cityRange.filter(
+              elt => elt.text === city
+            )[0].value;
+            this.location.longitude = res.longitude;
+            this.location.latitude = res.latitude;
+          },
+          onFail: function(err) {}
+        });
+      });
     },
     loadData() {}
   },

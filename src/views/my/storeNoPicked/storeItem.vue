@@ -6,19 +6,29 @@
         <img :src="img" alt />
       </div>
       <span class="divider"></span>
-      <div class="right" @click.capture="callPhone(store.phone)">
+      <div class="right" @click.capture="phonePop=true">
         <img src="./img/phone.png" alt />
         <div class="name">{{store.contanct}}</div>
       </div>
     </div>
-    <div class="bottom">
+    <div class="bottom" @click="navgationToCustomer(store)">
       <img src="./img/navigation.png" alt />
       <span>{{store.distance}}km{{store.address}}</span>
     </div>
     <slot />
+    <van-popup v-model="phonePop" round>
+      <pop
+        confirmTxt="呼叫"
+        :title="store.phone"
+        @confirm="callPhone(store.phone)"
+        @cancel="phonePop=false"
+      />
+    </van-popup>
   </div>
 </template>
 <script>
+import pop from "@/views/my/storeNoPicked/pop";
+
 export default {
   props: {
     store: {
@@ -29,10 +39,11 @@ export default {
   data() {
     return {
       img: require("./img/status" + this.store.status + ".png"),
-      phoneShow:true,
+      phonePop: false
     };
   },
   computed: {},
+  components: { pop },
   filters: {
     badgeFilter(val) {
       return val > 99 ? 99 : val;
@@ -45,8 +56,27 @@ export default {
     onClickRight() {
       this.$toast("菜单");
     },
-    callPhone(phone){
-      this.$emit('callClick',phone)
+    callPhone(phone) {
+      let that = this;
+      that.$dd.ready(function() {
+        that.$dd.biz.telephone.showCallMenu({
+          phoneNumber: phone, // 期望拨打的电话号码
+          code: "+86", // 国家代号，中国是+86
+          showDingCall: true, // 是否显示钉钉电话
+          onSuccess: function() {},
+          onFail: function() {}
+        });
+      });
+    },
+    navgationToCustomer(store) {
+      let that = this;
+      that.$dd.ready(function() {
+        that.$dd.biz.map.view({
+          latitude: Number(store.latitude), // 纬度
+          longitude: Number(store.longitude), // 经度
+          title: store.name // 地址/POI名称
+        });
+      });
     }
   },
   created() {}
