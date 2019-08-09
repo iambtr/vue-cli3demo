@@ -12,6 +12,17 @@
             loading() {
                 return this.$store.state.loading
             }
+        },
+        methods:{
+            jsapi(){
+
+
+            }
+        },
+        created() {
+            if(sessionStorage.getItem('token')){
+                this.jsapi()
+            }
         }
     }
 </script>

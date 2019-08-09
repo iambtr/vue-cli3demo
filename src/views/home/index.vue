@@ -16,33 +16,33 @@
         <div class="mid padding10 flex">
             <div class="flex flex-column flex-center">
                 <p>日活</p>
-                <div><span class="red">15</span>/30</div>
+                <div>{{homeInfo.living}}</div>
             </div>
             <div class="flex flex-column flex-center">
                 <p>销售排名</p>
-                <div><span class="red">15</span>/30</div>
+                <div>{{homeInfo.ranking}}</div>
             </div>
             <div class="flex flex-column flex-center">
                 <p>日均SKU</p>
-                <div><span class="red">15</span>/30</div>
+                <div>{{homeInfo.avgSKU}}</div>
             </div>
             <div class="flex flex-column flex-center">
                 <p>客单价</p>
-                <div><span class="red">15</span>/30</div>
+                <div>{{homeInfo.perCustomerTransaction}}</div>
             </div>
             <div class="flex flex-column flex-center">
                 <p>新开</p>
-                <div><span class="red">15</span>/30</div>
+                <div>{{homeInfo.newOpen}}</div>
             </div>
             <div class="flex flex-column flex-center">
                 <p>拜访</p>
-                <div><span class="red">15</span>/30</div>
+                <div>{{homeInfo.visit}}</div>
             </div>
             <div class="flex flex-column flex-center">
                 <p>注册</p>
-                <div><span class="red">15</span>/30</div>
+                <div>{{homeInfo.register}}</div>
             </div>
-            <div class="flex flex-column flex-center">
+            <div class="flex flex-column flex-center" @click="$router.push({name:'performance'})">
                 <p>查看更多</p>
                 <div class="flex dian">
                     <div></div>
@@ -52,28 +52,29 @@
             </div>
         </div>
         <div class="bottom padding10 flex">
-            <div @click="$router.push({name:'newUserReview',params:{p:'new'}})">
+            <div @click="$router.push({name:'newUserReview',query:{p:'new'}})">
                 <div>
                     <img :src="newUser" alt="">
                 </div>
                 <div>新商户审核</div>
-                <div class="deal">1条待处理</div>
+                <div class="deal">{{itemNum.examining}}条待处理</div>
             </div>
-            <div @click="$router.push({name:'newUserReview',params:{p:'update'}})">
+            <div @click="$router.push({name:'newUserReview',query:{p:'update'}})">
                 <div>
                     <img :src="infoUpdate" alt="">
                 </div>
                 <div>信息更新审核</div>
-                <div class="deal">1条待处理</div>
+                <div class="deal">{{itemNum.reexamining}}条待处理</div>
             </div>
             <div @click="$router.push({name:'visitList'})">
                 <div>
                     <img :src="plan" alt="">
                 </div>
                 <div>拜访计划</div>
-                <div class="deal">1条待访</div>
+                <div class="deal">{{itemNum.visitPlan}}条待访</div>
             </div>
         </div>
+        {{error}}
     </div>
 </template>
 
@@ -88,15 +89,99 @@
                 percent: 25,
                 newUser,
                 infoUpdate,
-                plan
+                plan,
+                itemNum:'',
+                error:''
             }
         },
         methods: {
             onClickRight() {
 
+            },
+            getItemNum(){
+                this.$get('/store/crm/store/queryCheckSummary').then(res=>{
+                    if(res.code===0){
+                        this.itemNum = res.data
+                    }
+                }).catch(err=>{
+
+                })
+            },
+
+        },
+        computed:{
+            homeInfo(){
+                return this.$store.state.homeInfo
             }
         },
         created() {
+            this.getItemNum()
+            this.$store.dispatch('getHomeInfo')
+            this.$get('/dingtalk/sign',{url:'http://'+location.host}).then(res=>{
+                if(res.code === 0){
+                    let config = res.data
+                    console.log(JSON.stringify(config))
+                    this.$dd.config(
+                        {
+                            agentId: config.agentId, // 必填，微应用ID
+                            corpId: config.corpId,//必填，企业ID
+                            timeStamp: config.timeStamp, // 必填，生成签名的时间戳
+                            nonceStr: config.nonceStr, // 必填，生成签名的随机串
+                            signature: config.signature, // 必填，签名
+                            type:0,   //选填。0表示微应用的jsapi,1表示服务窗的jsapi；不填默认为0。该参数从dingtalk.js的0.8.3版本开始支持
+                            jsApiList : [
+                                'biz.telephone.showCallMenu',
+                                'device.geolocation.get',
+                                'biz.map.view',
+                                'biz.map.locate'
+                            ] // 必填，需要使用的jsapi列表，注意：不要带dd。
+                        }
+                    )
+                    this.$dd.ready(()=> {
+                        this.$dd.device.geolocation.get({
+                            targetAccuracy : Number,
+                            coordinate : Number,
+                            withReGeocode : Boolean,
+                            useCache:true, //默认是true，如果需要频繁获取地理位置，请设置false
+                            onSuccess : function(result) {
+                                alert('success:'+JSON.stringify(result))
+                                /* 高德坐标 result 结构
+                                {
+                                    longitude : Number,
+                                    latitude : Number,
+                                    accuracy : Number,
+                                    address : String,
+                                    province : String,
+                                    city : String,
+                                    district : String,
+                                    road : String,
+                                    netType : String,
+                                    operatorType : String,
+                                    errorMessage : String,
+                                    errorCode : Number,
+                                    isWifiEnabled : Boolean,
+                                    isGpsEnabled : Boolean,
+                                    isFromMock : Boolean,
+                                    provider : wifi|lbs|gps,
+                                    isMobileEnabled : Boolean
+                                }
+                                */
+                            },
+                            onFail : function(err) {
+                                alert('err:'+JSON.stringify(err))
+                            }
+                        });
+                    })
+                    this.$dd.error((error)=>{
+                        this.error = JSON.stringify(error)
+                        console.log(JSON.stringify(error))
+                        alert('dd error: ' + JSON.stringify(error));
+                    })
+                }
+
+            }).catch(err=>{
+
+            })
         }
     }
 </script>

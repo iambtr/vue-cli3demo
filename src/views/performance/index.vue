@@ -42,6 +42,20 @@
                 </div>
             </div>
         </div>
+        <van-popup
+                    position="bottom"
+                    v-model="showPopup"
+                   >
+            <van-datetime-picker
+                    @confirm="confirm"
+                    @cancel="cancel"
+                    v-model="currentDate"
+                    type="date"
+                    :min-date="minDate"
+                    :style="{ height: '30%' }"
+            />
+        </van-popup>
+
     </div>
 </template>
 
@@ -49,6 +63,9 @@
     export default {
         data() {
             return {
+                minDate: new Date(2019,7,15),
+                currentDate:new Date(),
+                showPopup:false,
                 screen: [
                     {
                         name: '今日',
@@ -75,9 +92,24 @@
                     return item.active = false
                 })
                 this.screen[index].active = true
+                if(index===3){
+                    this.showPopup = true
+                }
+            },
+            confirm(){
+
+            },
+            cancel(){
+                this.showPopup = false
+            }
+        },
+        computed:{
+            homeInfo(){
+                return this.$store.state.homeInfo
             }
         },
         created() {
+            this.$store.dispatch('getHomeInfo')
         }
     }
 </script>

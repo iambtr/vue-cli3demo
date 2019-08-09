@@ -9,14 +9,15 @@ function resolve(dir) {
 module.exports = {
     lintOnSave: false,
     devServer: {
-        proxy: ''
+        // proxy: 'http://120.26.50.233:8186/xftob-server'
+        proxy:'http://10.128.16.134:8087/xftob-server'
     },
     chainWebpack: (config) => {
         config.resolve.alias
             .set('@', resolve('src'))
             .set('$img', resolve('src/assets/img'))
     },
-    publicPath: process.env.NODE_ENV === 'production' ? '/' : '/',
+    publicPath: process.env.NODE_ENV === 'production' ? '/crm' : '/',
     css: {
         loaderOptions: {
             postcss: {

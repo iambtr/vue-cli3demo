@@ -36,10 +36,11 @@
         },
         methods: {
             login(){
-                // this.$post('/login',{username:this.username,password: this.password}).then(res=>{
-                //     console.log(res)
-                // })
-                this.$router.replace('/')
+                this.$post('/sys/login',{username:this.username,password: this.password}).then(res=>{
+                    sessionStorage.setItem('token',res.data.token)
+                    this.$router.replace('/')
+                })
+
             }
         },
         created() {
