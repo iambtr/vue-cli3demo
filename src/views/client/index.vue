@@ -10,34 +10,34 @@
     <div class="filter-tab" v-if="active=='my'">
       <van-dropdown-menu active-color="#FF8239">
         <van-dropdown-item
-          v-model="dateValue"
-          :options="dateRange"
-          :title-class="filterValue=='dateValue'?'active':''"
-          @change="changTabValue('dateValue',$event)"
+          v-model="orderDays"
+          :options="orderDaysRange"
+          :title-class="filterValue=='orderDays'?'active':''"
+          @change="changTabValue('orderDays',$event)"
         />
         <van-dropdown-item
-          v-model="orderValue"
-          :options="orderRange"
-          :title-class="filterValue=='orderValue'?'active':''"
-          @change="changTabValue('orderValue',$event)"
+          v-model="orderStatus"
+          :options="orderStatusRange"
+          :title-class="filterValue=='orderStatus'?'active':''"
+          @change="changTabValue('orderStatus',$event)"
         />
         <van-dropdown-item
-          v-model="customerValue"
-          :options="customerRange"
-          :title-class="filterValue=='customerValue'?'active':''"
-          @change="changTabValue('customerValue',$event)"
+          v-model="storeLevel"
+          :options="storeLevelRange"
+          :title-class="filterValue=='storeLevel'?'active':''"
+          @change="changTabValue('storeLevel',$event)"
         />
         <van-dropdown-item
-          v-model="callOnValue"
-          :options="callOnRange"
-          :title-class="filterValue=='callOnValue'?'active':''"
-          @change="changTabValue('callOnValue',$event)"
+          v-model="visitStatus"
+          :options="visitStatusRange"
+          :title-class="filterValue=='visitStatus'?'active':''"
+          @change="changTabValue('visitStatus',$event)"
         />
         <van-dropdown-item
-          v-model="checkValue"
-          :options="checkRange"
-          :title-class="filterValue=='checkValue'?'active':''"
-          @change="changTabValue('checkValue',$event)"
+          v-model="stat"
+          :options="statRange"
+          :title-class="filterValue=='stat'?'active':''"
+          @change="changTabValue('stat',$event)"
         />
       </van-dropdown-menu>
     </div>
@@ -52,7 +52,7 @@
           v-model="dateValue2"
           :options="dateRange2"
           title-class="active"
-          @change="changTabValue2('dateValue',$event)"
+          @change="changTabValue2('dateValue2',$event)"
         />
       </van-dropdown-menu>
     </div>
@@ -77,13 +77,18 @@
         @load="loadData"
       >
         <div class="list-item" v-for="item in customers" :key="item.code">
-          <store-item :store="item" @callClick="readyCallPhone">
-            <store-info :store="item" @click.native="$router.push({name:'clientInfo'})"></store-info>
-            <van-button type="primary" block v-if="item.check&&!item.pickUp">去审核</van-button>
+          <store-item :store="item" @callClick="readyCallPhone" customer>
+            <store-info :store="item" @click.native="storeNav(item)"></store-info>
             <van-button
               type="primary"
               block
-              v-if="item.pickUp&&!item.check"
+              v-if="item.stat=='EXAMINING'||item.stat=='REEXAMINING'"
+              @click="$router.push({name:'newUserReview',query:{keyId:item.keyId}})"
+            >去审核</van-button>
+            <van-button
+              type="primary"
+              block
+              v-if="item.stat=='NORMAL'&&!item.serviceSales"
               @click="readyPickUp(item)"
             >拾取客户</van-button>
           </store-item>
@@ -105,41 +110,56 @@ export default {
   data() {
     return {
       active: "my", //my 我的 sea公海
-      filterValue: "dateValue", //生效的查询条件
-      dateValue: 30,
-      dateRange: [
+      filterValue: "orderDays", //生效的查询条件
+      orderDays: 30,
+      orderDaysRange: [
         { text: "≤30天", value: 30 },
-        { text: "≤14天", value: 14 },
+        { text: "≤14天", value: 15 },
         { text: "≤7天", value: 7 }
       ],
-      orderValue: 0,
-      orderRange: [{ text: "未下单", value: 0 }, { text: "已下单", value: 1 }],
-      customerValue: "A",
-      customerRange: [
+      orderStatus: 0,
+      orderStatusRange: [
+        { text: "未下单", value: 0 },
+        { text: "已下单", value: 1 }
+      ],
+      storeLevel: "A",
+      storeLevelRange: [
         { text: "A类客户", value: "A" },
         { text: "B类客户", value: "B" },
         { text: "C类客户", value: "C" },
         { text: "D类客户", value: "D" },
         { text: "E类客户", value: "E" }
       ],
-      callOnValue: 0,
-      callOnRange: [{ text: "已拜访", value: 1 }, { text: "未拜访", value: 0 }],
-      checkValue: 0,
-      checkRange: [{ text: "已审核", value: 1 }, { text: "未审核", value: 0 }],
+      visitStatus: 0,
+      visitStatusRange: [
+        { text: "已拜访", value: 1 },
+        { text: "未拜访", value: 0 }
+      ],
+      stat: "EXAMINING",
+      statRange: [
+        { text: "等待审核", value: "EXAMINING" },
+        { text: "正常", value: "NORMAL" },
+        { text: "冻结", value: "CANCEL" },
+        { text: "审核未通过", value: "FAILED" },
+        { text: "等待重新审核", value: "REEXAMINING" }
+      ],
       sorts: [
         {
           active: true,
           sort: "up",
+          label: "AMOUNT",
           name: "累计金额排序 "
         },
         {
           active: false,
           sort: "down",
+          label: "COUPON",
           name: "券数量 "
         },
         {
           active: false,
           sort: "down",
+          label: "DISTANCE",
           name: "距离排序 "
         }
       ],
@@ -161,35 +181,47 @@ export default {
       error: false,
       customers: [
         {
-          id: 1,
-          name: "鲜康水果店-09087208",
-          phone: "400-2323-323",
-          contanct: "张丽丽",
-          status: "1", //1 已掉落 2 已拾取 3即将掉落
+          storeId: 1,
           address: "杭州市拱墅区三墩路85号",
+          address1: "",
+          address2: "",
+          area: "",
+          city: "",
+          contact: "",
+          contractSales: "",
+          couponTotal: 4,
+          customerPrice: 1000.11,
           distance: "13.3",
-          amount: 3000.5,
-          customerPrice: 1000.11,
-          frequency: 5,
-          sku: 6,
-          coupon: 4,
-          check: true
-        },
-        {
-          id: 2,
-          name: "鲜康水果店-09087208",
-          phone: "15372005595",
-          contanct: "张丽丽2",
-          status: "1", //1 已掉落 2 已拾取 3即将掉落
-          address: "杭州市拱墅区三墩路85号",
-          distance: "13.4",
-          amount: 3000.5,
-          customerPrice: 1000.11,
-          frequency: 15,
-          sku: 6,
-          coupon: 4,
-          check: false,
-          pickUp: true
+          distributionPlan: "",
+          doorPhoto: "",
+          failMsg: "",
+          isDelete: "",
+          keyId: "222",
+          lastOrderTime: "",
+          lastVisitTime: "",
+          latiLongi: "",
+          licensePhoto: "",
+          mobile: "400-2323-323",
+          oprDt: "",
+          oprId: "",
+          orderTotal: "",
+          province: "",
+          receiverMobile: "",
+          receiverName: "",
+          reexaminingTime: "",
+          serviceSales: "",
+          stat: "NORMAL",
+          storeLevel: "A",
+          storeName: "鲜康水果店-09087208",
+          todayTotal: 3000.5,
+          updDt: "",
+          updId: "",
+          whCode: "",
+          contactName: "张丽丽",
+          status: "3", //1 已掉落 2 已拾取 3即将掉落
+          aboutToFall: true,
+          frequency: 5, //缺失
+          sku: 6 //缺失
         }
       ],
       location: {
@@ -204,6 +236,14 @@ export default {
     };
   },
   computed: {
+    order() {
+      let sortItem = this.sorts.find(nav => nav.active);
+      let so = "_ASC";
+      if (sortItem.sort === "down") {
+        so = "_DESC";
+      }
+      return sortItem.label + so;
+    },
     queryValue() {
       return this.sorts.find(nav => nav.active);
     },
@@ -215,13 +255,13 @@ export default {
   methods: {
     changTabValue(type, val) {
       let initValue = {
-        dateValue: 7,
-        orderValue: 0,
-        customerValue: "A",
-        callOnValue: 0,
-        checkValue: 0
+        orderDays: 7,
+        orderStatus: 0,
+        storeLevel: "A",
+        visitStatus: 0,
+        stat: "EXAMINING"
       };
-      ["dateValue", "orderValue", "customerValue", "callOnValue", "checkValue"]
+      ["orderDays", "orderStatus", "storeLevel", "visitStatus", "stat"]
         .filter(elt => elt !== type)
         .forEach(item => {
           this[item] = initValue[item];
@@ -264,7 +304,16 @@ export default {
       this.pickPop = true;
     },
     pickUp(e) {
+      console.log(this.pickItem);
       this.pickPop = false;
+      this.$post("/store/crm/store/pickUp",{keyId:this.pickItem.keyId}).then(data => {
+        console.log(data);
+      });
+    },
+    storeNav(item) {
+      let query = { storeKeyId: item.keyId };
+      query.type = this.active;
+      this.$router.push({ name: "clientInfo", query });
     },
     getLoction() {
       let that = this;
@@ -314,7 +363,17 @@ export default {
     },
     loadData() {}
   },
-  created() {}
+  created() {
+    let { type } = this.$route.query;
+    switch (type) {
+      case "all":
+        this.filterValue = "";
+        break;
+      case "orderStatus":
+        this.filterValue = "orderStatus";
+        break;
+    }
+  }
 };
 </script>
 <style lang="less">

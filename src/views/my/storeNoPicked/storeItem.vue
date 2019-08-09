@@ -2,25 +2,30 @@
   <div class="store-body">
     <div class="top">
       <div class="left">
-        <div class="store-name">{{store.name}}</div>
-        <img :src="img" alt />
+        <div class="store-name">{{store.storeName}}</div>
+        <div class="tags">
+          <van-tag v-if="customer&&!store.serviceSales&&store.stat=='NORMAL'" color="#3CC8B6">待领取</van-tag>
+          <van-tag v-if="customer" color="#FF8339">{{store.stat|statFilter}}</van-tag>
+          <van-tag v-if="customer" color="#FF8339">{{store.storeLevel}}</van-tag>
+          <van-tag v-if="store.status" :color="store.status|statusColorFilter">{{store.status|statusFilter}}</van-tag>
+        </div>
       </div>
       <span class="divider"></span>
       <div class="right" @click.capture="phonePop=true">
         <img src="./img/phone.png" alt />
-        <div class="name">{{store.contanct}}</div>
+        <div class="name">{{store.contactName}}</div>
       </div>
     </div>
     <div class="bottom" @click="navgationToCustomer(store)">
       <img src="./img/navigation.png" alt />
-      <span>{{store.distance}}km{{store.address}}</span>
+      <span>{{store.distance}}km{{store.address}}{{store.address2}}</span>
     </div>
     <slot />
     <van-popup v-model="phonePop" round>
       <pop
         confirmTxt="呼叫"
-        :title="store.phone"
-        @confirm="callPhone(store.phone)"
+        :title="store.mobile"
+        @confirm="callPhone(store.mobile)"
         @cancel="phonePop=false"
       />
     </van-popup>
@@ -34,6 +39,10 @@ export default {
     store: {
       type: Object,
       required: true
+    },
+    customer: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -45,8 +54,23 @@ export default {
   computed: {},
   components: { pop },
   filters: {
-    badgeFilter(val) {
-      return val > 99 ? 99 : val;
+    statFilter(val) {
+      let stat = {
+        EXAMINING: "等待审核",
+        NORMAL: "正常",
+        CANCEL: "冻结",
+        FAILED: "审核未通过",
+        REEXAMINING: "等待重新审核"
+      };
+      return stat[val];
+    },
+    statusFilter(val) {
+      let stat = ["", "已掉落", "已拾取", "即将掉落"];
+      return stat[Number(val)];
+    },
+    statusColorFilter(val) {
+      let stat = ["", "#A1AAB8", "#FF8239", "#A1AAB8"];
+      return stat[Number(val)];
     }
   },
   methods: {
@@ -133,6 +157,12 @@ export default {
     height: 12px;
     width: 1px;
     background-color: #e5e5e5;
+  }
+  .tags {
+    display: flex;
+    * {
+      margin-right: 10px;
+    }
   }
   .bottom {
     height: 27px;

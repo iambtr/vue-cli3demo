@@ -5,7 +5,7 @@
     </div>
     <div class="item-body">
       <div class="info-item">
-        <div class="info-value">{{store.amount}}</div>
+        <div class="info-value">{{store.todayTotal}}</div>
         <div class="info-name">今日下单(元)</div>
       </div>
       <div class="divider"></div>
@@ -24,7 +24,7 @@
       </div>
       <div class="divider"></div>
       <div class="info-item">
-        <div class="info-value">{{store.coupon}}</div>
+        <div class="info-value">{{store.couponTotal}}</div>
         <div class="info-name">优惠券</div>
       </div>
     </div>

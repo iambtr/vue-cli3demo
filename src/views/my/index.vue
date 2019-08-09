@@ -36,7 +36,10 @@ export default {
       navs: [
         {
           link: {
-            name: ""
+            name: "client",
+            query: {
+              type: "all"
+            }
           },
           name: "客户库容",
           icon:
@@ -50,7 +53,7 @@ export default {
           name: "已掉落",
           icon:
             "https://xianfengapp.oss-cn-hangzhou.aliyuncs.com/xiaoguogong/nav2.png",
-          badge: "20"
+          badge: ""
         },
         {
           link: {
@@ -59,16 +62,19 @@ export default {
           name: "已拾取",
           icon:
             "https://xianfengapp.oss-cn-hangzhou.aliyuncs.com/xiaoguogong/nav3.png",
-          badge: "2011"
+          badge: ""
         },
         {
           link: {
-            name: ""
+            name: "client",
+            query: {
+              type: "orderStatus"
+            }
           },
           name: "注册未下单",
           icon:
             "https://xianfengapp.oss-cn-hangzhou.aliyuncs.com/xiaoguogong/nav4.png",
-          badge: "2"
+          badge: ""
         },
         {
           link: {
@@ -77,7 +83,7 @@ export default {
           name: "即将掉落",
           icon:
             "https://xianfengapp.oss-cn-hangzhou.aliyuncs.com/xiaoguogong/nav5.png",
-          badge: "20"
+          badge: ""
         }
       ]
     };
@@ -87,8 +93,36 @@ export default {
       return val > 99 ? 99 : val;
     }
   },
-  methods: {},
-  created() {}
+  methods: {
+    getMyStoresInfo() {
+      this.navs[0].badge = 22;
+      this.navs[1].badge = 11;
+      this.navs[2].badge = 0;
+      this.navs[3].badge = 2;
+      this.navs[4].badge = 0;
+      return;
+      this.$get("/store/crm/store/myStoresInfo").then(data => {
+        console.log(data);
+        // let os = {
+        //   customersSum: 0,
+        //   fall: 0,
+        //   falling: 0,
+        //   pickup: 0,
+        //   realName: "string",
+        //   registerNoOrder: 0,
+        //   userName: "string"
+        // };
+        // this.navs[0].badge = data.customersSum
+        // this.navs[1].badge = data.fall
+        // this.navs[2].badge = data.pickup
+        // this.navs[3].badge = data.registerNoOrder
+        // this.navs[4].badge = data.falling
+      });
+    }
+  },
+  created() {
+    this.getMyStoresInfo();
+  }
 };
 </script>
 

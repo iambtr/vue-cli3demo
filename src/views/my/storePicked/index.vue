@@ -48,22 +48,50 @@ export default {
       query: "",
       storeList: [
         {
-          id: 1,
-          name: "鲜康水果店-09087208",
-          phone: "400-2323-323",
-          contanct: "张丽丽",
-          status: "2", //1 已掉落 2 已拾取 3即将掉落
+          storeId: 1,
           address: "杭州市拱墅区三墩路85号",
-          distance: "13.3"
-        },
-        {
-          id: 2,
-          name: "鲜康水果店-09087208",
-          phone: "15372005595",
-          contanct: "张丽丽2",
+          address1: "",
+          address2: "",
+          area: "",
+          city: "",
+          contact: "",
+          contractSales: "",
+          couponTotal: 4,
+          customerPrice: 1000.11,
+          distance: "13.3",
+          distributionPlan: "",
+          doorPhoto: "",
+          failMsg: "",
+          isDelete: "",
+          keyId: "",
+          lastOrderTime: "",
+          lastVisitTime: "",
+          latiLongi: "",
+          licensePhoto: "",
+          mobile: "400-2323-323",
+          oprDt: "",
+          oprId: "",
+          orderTotal: "",
+          province: "",
+          receiverMobile: "",
+          receiverName: "",
+          reexaminingTime: "",
+          serviceSales: "",
+          stat: "EXAMINING",
+          storeLevel: "A",
+          storeName: "鲜康水果店-09087208",
+          todayTotal: 3000.5,
+          updDt: "",
+          updId: "",
+          whCode: "",
+          contanctName: "张丽丽",
           status: "2", //1 已掉落 2 已拾取 3即将掉落
-          address: "杭州市拱墅区三墩路85号",
-          distance: "13.4"
+          // amount: 3000.5,
+          // customerPrice: 1000.11,
+          frequency: 5, //缺失
+          sku: 6 //缺失
+          // coupon: 4,
+          // check: true
         }
       ]
     };

@@ -15,7 +15,7 @@ Vue.mixin(goBack)
 import {
     NavBar, TreeSelect, Button, Uploader, Icon, Stepper, DatetimePicker, Popup,
     Cell, CellGroup, Panel, Dialog, Toast, Loading, ImagePreview, PullRefresh, Picker,
-    List, Field, Tabs, Tab,Rate, Tabbar, TabbarItem,Progress,Grid, GridItem,DropdownMenu, DropdownItem,ActionSheet,Search
+    List, Field, Tabs, Tab,Rate, Tabbar, TabbarItem,Progress,Grid, GridItem,DropdownMenu, DropdownItem,ActionSheet,Tag,Search
 } from 'vant';
 Vue.use(Rate)
 Vue.use(Search)
@@ -47,6 +47,7 @@ Vue.use(Field)
 Vue.use(Tabs)
 Vue.use(Grid)
 Vue.use(GridItem)
+Vue.use(Tag)
 Vue.prototype.$dialog = Dialog
 Vue.prototype.$dd = dd
 Vue.prototype.$imagePreView = ImagePreview
