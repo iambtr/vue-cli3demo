@@ -60,11 +60,23 @@
                 position,
                 refresh,
                 camera,
-                fileList: []
+                fileList: [],
+                planId:'',
+
             }
         },
-        methods: {},
+        methods: {
+            getVisitedInfo(){
+                this.$get('/visit/crm/visitLog/getDetail',{planId:this.planId}).then(res=>{
+
+                }).catch(err=>{
+
+                })
+            }
+        },
         created() {
+            this.planId = this.$route.query.planId
+            this.getVisitedInfo()
         }
     }
 </script>

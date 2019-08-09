@@ -103,7 +103,13 @@
                 this.showPopup = false
             }
         },
+        computed:{
+            homeInfo(){
+                return this.$store.state.homeInfo
+            }
+        },
         created() {
+            this.$store.dispatch('getHomeInfo')
         }
     }
 </script>

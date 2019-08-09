@@ -1,6 +1,8 @@
 <template>
     <div class="main-view">
+
         <router-view/>
+
         <van-tabbar route fixed >
             <van-tabbar-item
                     replace
@@ -75,6 +77,7 @@
         },
         methods: {},
         created() {
+
         }
     }
 </script>
