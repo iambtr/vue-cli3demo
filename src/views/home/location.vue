@@ -125,6 +125,7 @@
 
         },
         created() {
+            this.getLocation()
             this.planId = this.$route.query.planId
             this.getVisitedInfo()
         }

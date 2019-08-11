@@ -43,7 +43,7 @@
                         <span class="flex-1">{{item.storeAddress}}</span>
                     </div>
                     <div class="action-view flex flex-between">
-                        <div class="flex-1" @click="goTell(item.contactMobile,item.contactId,item.contactName)">
+                        <div class="flex-1" @click="goTell(item.contactMobile)">
                             <img :src="tell" alt="">
                             <div>{{item.contactName}}</div>
                         </div>
@@ -179,15 +179,9 @@
                     this.error = true
                 })
             },
-            goTell(tell, id, name) {
-
-            }
         },
         created() {
             // this.getList()
-
-
-
         }
     }
 </script>
