@@ -8,10 +8,12 @@
         >
         </van-nav-bar>
         <div class="container">
-            <div class="d1">观丰水果店-010669900</div>
-            <div class="d2">联系人：李丽娟</div>
+            <div class="d1">{{visitPlan.storeName}}-{{visitPlan.storeKeyId}}</div>
+            <div class="d2">联系人：{{visitPlan.contactName}}</div>
             <div class="d3">进店签到</div>
-            <div class="d4">--:--</div>
+            <div class="d4" v-if="visitLog.entryDt">{{getHours(visitLog.entryDt)}}</div>
+            <div class="d4" v-else>--:--</div>
+
             <div class="d5">
                 <div class="flex flex-1 d6">
                     <img :src="position" alt="">
@@ -22,19 +24,24 @@
                     <img :src="refresh" alt="">
                 </div>
             </div>
-            <div class="d3">离店签到</div>
-            <div class="d4">--:--</div>
-            <div class="d5">
-                <div class="flex flex-1 d6">
-                    <img :src="position" alt="">
-                    <span class="km">13.3km </span>
-                    <span>杭州市拱墅区三墩路85号</span>
-                </div>
-                <div class="flex flex-center d7">
-                    <img :src="refresh" alt="">
+            <div style="text-align: center;width: 100%" v-if="visitLog.entryDt">
+                <div class="d3">离店签到</div>
+
+                <div class="d4" v-if="visitLog.exitDt">{{getHours(visitLog.exitDt)}}</div>
+                <div class="d4" v-else>--:--</div>
+
+                <div class="d5">
+                    <div class="flex flex-1 d6">
+                        <img :src="position" alt="">
+                        <span class="km">13.3km </span>
+                        <span>杭州市拱墅区三墩路85号</span>
+                    </div>
+                    <div class="flex flex-center d7">
+                        <img :src="refresh" alt="">
+                    </div>
                 </div>
             </div>
-            <div class="d8">
+            <div class="d8" v-if="visitLog.exitDt">
                 <textarea placeholder="请填写拜访情况，至少10字，并至少上传一张照片" name="" id=""></textarea>
                 <van-uploader class="upload"
                               v-model="fileList"
@@ -44,9 +51,9 @@
                 <img class="camera" :src="camera" alt="">
             </div>
         </div>
-        <van-button type="primary" class="btn">我已进店</van-button>
-        <van-button type="primary" class="btn">我已离店</van-button>
-        <van-button type="primary" class="btn">完成拜访</van-button>
+        <van-button type="primary" class="btn" v-if="!visitLog.entryDt" @click="signIn('in')">我已进店</van-button>
+        <van-button type="primary" class="btn" v-if="visitLog.entryDt&&!visitLog.exitDt"  @click="signIn('out')">我已离店</van-button>
+        <van-button type="primary" class="btn" v-if="visitLog.exitDt">完成拜访</van-button>
     </div>
 </template>
 
@@ -54,25 +61,68 @@
     import position from '$img/postion.png'
     import refresh from '$img/refresh.png'
     import camera from '$img/camera.png'
+    import dd from '@/mixins/dd'
     export default {
+        mixins:[dd],
         data() {
             return {
                 position,
                 refresh,
                 camera,
                 fileList: [],
-                planId:'',
+                planId: '',
+                visitPlan: '',
+                visitLog: ''
 
             }
         },
         methods: {
-            getVisitedInfo(){
-                this.$get('/visit/crm/visitLog/getDetail',{planId:this.planId}).then(res=>{
+            getVisitedInfo() {
+                this.$get('/visit/crm/visitLog/getDetail', {planId: this.planId}).then(res => {
+                    if (res.code === 0) {
+                        this.visitPlan = res.data.visitPlan
+                        this.visitLog = res.data.visitLog
+                    }
+                }).catch(err => {
 
+                })
+            },
+            getHours(time) {
+                let hours = time.getHours() > 9 ? time.getHours() : '0' + time.getHours()
+                let min = time.getMinutes() > 9 ? time.getMinutes() : '0' + time.getMinutes()
+                return hours + ':' + min
+            },
+            rad(d) {
+                return d * Math.PI / 180.0;
+            },
+            geoDistance(lat1, lng1, lat2, lng2) {
+                let radLat1 = this.rad(lat1);
+                let radLat2 = this.rad(lat2);
+                let a = radLat1 - radLat2;
+                let b = this.rad(lng1) - this.rad(lng2);
+                let s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) + Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
+                s = s * 6378.137;// EARTH_RADIUS;
+                s = Math.round(s * 10000) / 10000; //输出为公里
+                return s;
+            },
+            signIn(type){
+                this.$post('/visit/crm/visitLog/signIn',
+                    {
+                        "address": "string",
+                        "keyId": this.planId,
+                        "latitude": "string",
+                        "longitude": "string",
+                        "type": type==='in'? 0:1
+                    }
+                ).then(res=>{
+                    if(res.code ===0 ){
+                        this.getVisitedInfo()
+                    }
                 }).catch(err=>{
 
                 })
             }
+
         },
         created() {
             this.planId = this.$route.query.planId
@@ -182,7 +232,8 @@
     .upload {
         margin-top: 5px;
     }
-    .camera{
+
+    .camera {
         position: absolute;
         right: 10px;
         bottom: 5px;

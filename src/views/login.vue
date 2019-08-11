@@ -37,10 +37,9 @@
         methods: {
             login(){
                 this.$post('/sys/login',{username:this.username,password: this.password}).then(res=>{
-                    sessionStorage.setItem('token',res.data.token)
+                    localStorage.setItem('token',res.data.token)
                     this.$router.replace('/')
                 })
-
             }
         },
         created() {
