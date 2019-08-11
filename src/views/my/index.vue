@@ -1,20 +1,20 @@
 <template>
   <div class="body">
     <div class="header">
-      <img
+      <!-- <img
         src="https://xianfengapp.oss-cn-hangzhou.aliyuncs.com/xiaoguogong/nav1.png"
         alt
         class="avator"
-      />
+      />-->
       <div class="info">
-        <div>{{userInfo.name}}</div>
+        <div>{{realName}}{{userName}}</div>
         <!-- <div class="p">{{userInfo.des}}</div> -->
       </div>
     </div>
     <div class="nav">
       <div class="title">客户动态</div>
-      <div>
-        <van-grid :border="false" :column-num="4">
+      <div class="van-grid-body">
+        <van-grid :border="false">
           <van-grid-item v-for="item in navs" :key="item.name" :to="item.link">
             <img :src="item.icon" alt class="icon" />
             <span class="badge" v-if="item.badge">{{item.badge|badgeFilter}}</span>
@@ -29,10 +29,8 @@
 export default {
   data() {
     return {
-      userInfo: {
-        name: "用户名 00000008",
-        des: "浙北分公司-销售顾问"
-      },
+      realName: "",
+      userName: "",
       navs: [
         {
           link: {
@@ -95,28 +93,17 @@ export default {
   },
   methods: {
     getMyStoresInfo() {
-      this.navs[0].badge = 22;
-      this.navs[1].badge = 11;
-      this.navs[2].badge = 0;
-      this.navs[3].badge = 2;
-      this.navs[4].badge = 0;
-      return;
       this.$get("/store/crm/store/myStoresInfo").then(data => {
-        console.log(data);
-        // let os = {
-        //   customersSum: 0,
-        //   fall: 0,
-        //   falling: 0,
-        //   pickup: 0,
-        //   realName: "string",
-        //   registerNoOrder: 0,
-        //   userName: "string"
-        // };
-        // this.navs[0].badge = data.customersSum
-        // this.navs[1].badge = data.fall
-        // this.navs[2].badge = data.pickup
-        // this.navs[3].badge = data.registerNoOrder
-        // this.navs[4].badge = data.falling
+        if (data.code == 0) {
+          let { myStoresVO } = data.data;
+          this.navs[0].badge = myStoresVO.customersSum
+          this.navs[1].badge = myStoresVO.fall
+          this.navs[2].badge = myStoresVO.pickup
+          this.navs[3].badge = myStoresVO.registerNoOrder
+          this.navs[4].badge = myStoresVO.falling
+          this.userName = myStoresVO.userName
+          this.realName = myStoresVO.realName
+        }
       });
     }
   },
@@ -125,6 +112,11 @@ export default {
   }
 };
 </script>
+<style>
+.van-grid-body .van-grid-item{
+  flex-basis: 24.9% !important;
+}
+</style>
 
 <style scoped lang="less">
 .body {
@@ -172,8 +164,8 @@ export default {
       text-align: left;
     }
     .icon {
-      width: 66px;
-      height: 66px;
+      width: 65px;
+      height: 65px;
     }
     .badge {
       position: absolute;

@@ -114,7 +114,7 @@ export default {
       orderDays: 30,
       orderDaysRange: [
         { text: "≤30天", value: 30 },
-        { text: "≤14天", value: 15 },
+        { text: "≤15天", value: 15 },
         { text: "≤7天", value: 7 }
       ],
       orderStatus: 0,
@@ -166,14 +166,14 @@ export default {
       dateValue2: 30,
       dateRange2: [
         { text: "≤30天", value: 30 },
-        { text: "≤14天", value: 14 },
+        { text: "≤15", value: 15 },
         { text: "≤7天", value: 7 }
       ],
-      cityValue: 0,
+      cityValue: "杭州",
       cityRange: [
-        { text: "杭州", value: 2 },
-        { text: "上海", value: 1 },
-        { text: "北京", value: 0 }
+        { text: "杭州", value: "杭州" },
+        { text: "上海", value: "上海"},
+        { text: "北京", value: "北京" }
       ],
       //   列表
       loading: false,
@@ -225,8 +225,8 @@ export default {
         }
       ],
       location: {
-        longitude: Number,
-        latitude: Number
+        longitude: 120.100227,
+        latitude: 30.32688
       },
       //弹框
       phonePop: false,
@@ -234,6 +234,15 @@ export default {
       pickItem: {},
       pickPop: false
     };
+  },
+  watch:{
+    active(n,o){
+      if(n === 'my'){
+        this.getMyCustomers()
+      }else{
+        this.getSeaCustomers()
+      }
+    }
   },
   computed: {
     order() {
@@ -268,6 +277,11 @@ export default {
         });
       this[type] = val;
       this.filterValue = type;
+      this.getMyCustomers()
+    },
+    changTabValue2(type, val) {
+
+      this.getSeaCustomers()
     },
     changeItem(item, inx) {
       let queryValue = this.queryValue;
@@ -286,10 +300,54 @@ export default {
         });
       }
       this.sorts = sorts;
+      this.getMyCustomers()
     },
     toInfoIndex() {
       this.$router.push({
         name: "clientInfo"
+      });
+    },
+    getMyCustomers(e) {
+      let params = {
+        lat:this.location.latitude,
+        lng:this.location.longitude,
+        order:this.order
+      }
+      if(this.filterValue){
+        params[this.filterValue] = this[this.filterValue]
+      }
+      this.$get("/crm/store/list",params).then(data => {
+        if (data.code == 0) {
+          let {list} = data.data
+          console.log(list)
+          if(list){
+            this.customers = list.map(elt=>{
+              if(elt.aboutToFall){
+                elt.status = "3"
+              }
+              return elt
+            })
+          }
+        }
+      });
+    },
+    getSeaCustomers(e) {
+      let params = {
+        lat:this.location.latitude,
+        lng:this.location.longitude,
+        city:this.cityValue,
+        orderDays:this.dateValue2,
+      }
+      this.$get("/crm/store/publicList",params).then(data => {
+        if (data.code == 0) {
+          let {list} = data.data
+          console.log(list)
+          if(list){
+            this.customers = list.map(elt=>{
+              return elt
+            })
+          }
+        }
       });
     },
     readyCallPhone(e) {
@@ -306,7 +364,9 @@ export default {
     pickUp(e) {
       console.log(this.pickItem);
       this.pickPop = false;
-      this.$post("/store/crm/store/pickUp",{keyId:this.pickItem.keyId}).then(data => {
+      this.$post("/store/crm/store/pickUp", {
+        keyId: this.pickItem.keyId
+      }).then(data => {
         console.log(data);
       });
     },
@@ -368,9 +428,11 @@ export default {
     switch (type) {
       case "all":
         this.filterValue = "";
+        this.getMyCustomers();
         break;
       case "orderStatus":
         this.filterValue = "orderStatus";
+        this.getMyCustomers();
         break;
     }
   }
