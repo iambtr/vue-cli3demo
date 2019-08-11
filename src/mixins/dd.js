@@ -51,7 +51,7 @@ export default {
                 })
             })
         },
-       async getLocation(callback){
+       async getLocation(callback=()=>{}){
             this.$dd.ready(()=> {
                 this.$dd.device.geolocation.get({
                     targetAccuracy : 200,

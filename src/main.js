@@ -54,14 +54,14 @@ Vue.prototype.$dialog = Dialog
 Vue.prototype.$imagePreView = ImagePreview
 Toast.setDefaultOptions({duration: 1500})
 
-const devUrl = 'http://10.128.12.52:8086/warehousePicking-server/'
+const devUrl = 'http://120.26.50.233:8186/xftob-server'
 const proUrl = 'http://120.26.50.233:8186/xftob-server'
 
 console.log(process.env.NODE_ENV)
 const url = process.env.NODE_ENV !== 'production' ? devUrl : proUrl
 
 process.env.NODE_ENV !== 'production' ? '' : axios.defaults.baseURL = url
-// process.uploadUrl = url
+process.uploadUrl = url
 
 Vue.config.productionTip = false
 axios.defaults.timeout = 600000;
