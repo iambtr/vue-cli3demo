@@ -51,7 +51,7 @@ export default {
                 })
             })
         },
-        getLocation(){
+       async getLocation(callback){
             this.$dd.ready(()=> {
                 this.$dd.device.geolocation.get({
                     targetAccuracy : 200,
@@ -59,6 +59,7 @@ export default {
                     withReGeocode : true,
                     useCache:true, //默认是true，如果需要频繁获取地理位置，请设置false
                     onSuccess : (result)=>{
+                        callback()
                         this.mixins_latitude = result.latitude
                         this.mixins_longitude = result.longitude
                         this.mixins_address = result.address

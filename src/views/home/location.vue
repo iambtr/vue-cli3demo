@@ -18,7 +18,7 @@
                 <div class="flex flex-1 d6">
                     <img :src="position" alt="">
                     <span class="km">13.3km </span>
-                    <span>杭州市拱墅区三墩路85号</span>
+                    <span>{{mixins_address}}</span>
                 </div>
                 <div class="flex flex-center d7">
                     <img :src="refresh" alt="">
