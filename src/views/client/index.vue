@@ -105,8 +105,9 @@
 import storeItem from "@/views/my/storeNoPicked/storeItem";
 import storeInfo from "./components/storeInfo";
 import pop from "@/views/my/storeNoPicked/pop";
-
+import dd from "@/mixins/dd";
 export default {
+  mixins: [dd],
   data() {
     return {
       active: "my", //my 我的 sea公海
@@ -172,8 +173,7 @@ export default {
       cityValue: "杭州",
       cityRange: [
         { text: "杭州", value: "杭州" },
-        { text: "上海", value: "上海"},
-        { text: "北京", value: "北京" }
+        { text: "上海", value: "上海" },
       ],
       //   列表
       loading: false,
@@ -235,12 +235,12 @@ export default {
       pickPop: false
     };
   },
-  watch:{
-    active(n,o){
-      if(n === 'my'){
-        this.getMyCustomers()
-      }else{
-        this.getSeaCustomers()
+  watch: {
+    active(n, o) {
+      if (n === "my") {
+        this.getMyCustomers();
+      } else {
+        this.getSeaCustomers();
       }
     }
   },
@@ -277,11 +277,10 @@ export default {
         });
       this[type] = val;
       this.filterValue = type;
-      this.getMyCustomers()
+      this.getMyCustomers();
     },
     changTabValue2(type, val) {
-
-      this.getSeaCustomers()
+      this.getSeaCustomers();
     },
     changeItem(item, inx) {
       let queryValue = this.queryValue;
@@ -300,7 +299,7 @@ export default {
         });
       }
       this.sorts = sorts;
-      this.getMyCustomers()
+      this.getMyCustomers();
     },
     toInfoIndex() {
       this.$router.push({
@@ -309,43 +308,44 @@ export default {
     },
     getMyCustomers(e) {
       let params = {
-        lat:this.location.latitude,
-        lng:this.location.longitude,
-        order:this.order
+        lat: Number(this.mixins_latitude),
+        lng: Number(this.mixins_longitude),
+        order: this.order
+      };
+      if (this.filterValue) {
+        params[this.filterValue] = this[this.filterValue];
       }
-      if(this.filterValue){
-        params[this.filterValue] = this[this.filterValue]
-      }
-      this.$get("/crm/store/list",params).then(data => {
+      this.$get("/crm/store/list", params).then(data => {
         if (data.code == 0) {
-          let {list} = data.data
-          console.log(list)
-          if(list){
-            this.customers = list.map(elt=>{
-              if(elt.aboutToFall){
-                elt.status = "3"
+          let { list } = data.data;
+          console.log(list);
+          if (list) {
+            this.customers = list.map(elt => {
+              if (elt.aboutToFall) {
+                elt.status = "3";
               }
-              return elt
-            })
+              return elt;
+            });
           }
         }
       });
     },
     getSeaCustomers(e) {
       let params = {
-        lat:this.location.latitude,
-        lng:this.location.longitude,
-        city:this.cityValue,
-        orderDays:this.dateValue2,
-      }
-      this.$get("/crm/store/publicList",params).then(data => {
+        lat: Number(this.mixins_latitude),
+        lng: Number(this.mixins_longitude),
+        city: this.cityValue,
+        orderDays: this.dateValue2
+      };
+      this.$get("/crm/store/publicList", params).then(data => {
         if (data.code == 0) {
-          let {list} = data.data
-          console.log(list)
-          if(list){
-            this.customers = list.map(elt=>{
-              return elt
-            })
+          let { list } = data.data;
+          console.log(list);
+          if (list) {
+            this.customers = list.map(elt => {
+              elt.status = "4";
+              return elt;
+            });
           }
         }
       });
@@ -367,7 +367,7 @@ export default {
       this.$post("/store/crm/store/pickUp", {
         keyId: this.pickItem.keyId
       }).then(data => {
-        console.log(data);
+        this.getSeaCustomers();
       });
     },
     storeNav(item) {
@@ -375,14 +375,14 @@ export default {
       query.type = this.active;
       this.$router.push({ name: "clientInfo", query });
     },
-    getLoction() {
+    getLoction2() {
       let that = this;
       that.$dd.ready(function() {
         that.$dd.device.geolocation.get({
-          targetAccuracy: Number,
-          coordinate: Number,
-          withReGeocode: Boolean,
-          useCache: true, //默认是true，如果需要频繁获取地理位置，请设置false
+          targetAccuracy: 200,
+          coordinate: 1,
+          withReGeocode: true,
+          useCache: false, //默认是true，如果需要频繁获取地理位置，请设置false
           onSuccess: function(result) {
             /* 高德坐标 result 结构
         {
@@ -424,17 +424,19 @@ export default {
     loadData() {}
   },
   created() {
-    let { type } = this.$route.query;
-    switch (type) {
-      case "all":
-        this.filterValue = "";
-        this.getMyCustomers();
-        break;
-      case "orderStatus":
-        this.filterValue = "orderStatus";
-        this.getMyCustomers();
-        break;
-    }
+    this.getLoction(() => {
+      let { type } = this.$route.query;
+      switch (type) {
+        case "all":
+          this.filterValue = "";
+          this.getMyCustomers();
+          break;
+        case "orderStatus":
+          this.filterValue = "orderStatus";
+          this.getMyCustomers();
+          break;
+      }
+    });
   }
 };
 </script>

@@ -34,7 +34,9 @@
 <script>
 import pop from "@/views/my/storeNoPicked/pop";
 
+import dd from "@/mixins/dd";
 export default {
+  mixins: [dd],
   props: {
     store: {
       type: Object,
@@ -65,11 +67,11 @@ export default {
       return stat[val];
     },
     statusFilter(val) {
-      let stat = ["", "已掉落", "已拾取", "即将掉落"];
+      let stat = ["", "已掉落", "已拾取", "即将掉落", "待认领"];
       return stat[Number(val)];
     },
     statusColorFilter(val) {
-      let stat = ["", "#A1AAB8", "#FF8239", "#A1AAB8"];
+      let stat = ["", "#A1AAB8", "#FF8239", "#A1AAB8","#3CC8B6"];
       return stat[Number(val)];
     }
   },
@@ -81,16 +83,7 @@ export default {
       this.$toast("菜单");
     },
     callPhone(phone) {
-      let that = this;
-      that.$dd.ready(function() {
-        that.$dd.biz.telephone.showCallMenu({
-          phoneNumber: phone, // 期望拨打的电话号码
-          code: "+86", // 国家代号，中国是+86
-          showDingCall: true, // 是否显示钉钉电话
-          onSuccess: function() {},
-          onFail: function() {}
-        });
-      });
+      this.goTell(phone)
     },
     navgationToCustomer(store) {
       let that = this;

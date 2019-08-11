@@ -96,16 +96,16 @@ export default {
       this.$get("/store/crm/store/myStoresInfo").then(data => {
         if (data.code == 0) {
           let { myStoresVO } = data.data;
-          this.navs[0].badge = myStoresVO.customersSum
-          this.navs[1].badge = myStoresVO.fall
-          this.navs[2].badge = myStoresVO.pickup
-          this.navs[3].badge = myStoresVO.registerNoOrder
-          this.navs[4].badge = myStoresVO.falling
-          this.userName = myStoresVO.userName
-          this.realName = myStoresVO.realName
+          this.navs[0].badge = myStoresVO.customersSum;
+          this.navs[1].badge = myStoresVO.fall;
+          this.navs[2].badge = myStoresVO.pickup;
+          this.navs[3].badge = myStoresVO.registerNoOrder;
+          this.navs[4].badge = myStoresVO.falling;
+          this.userName = myStoresVO.userName;
+          this.realName = myStoresVO.realName;
         }
       });
-    }
+    },
   },
   created() {
     this.getMyStoresInfo();
@@ -113,7 +113,7 @@ export default {
 };
 </script>
 <style>
-.van-grid-body .van-grid-item{
+.van-grid-body .van-grid-item {
   flex-basis: 24.9% !important;
 }
 </style>

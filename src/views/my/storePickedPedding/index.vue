@@ -15,7 +15,9 @@
 </template>
 <script>
 import storeItem from "../storeNoPicked/storeItem";
+import dd from "@/mixins/dd";
 export default {
+  mixins: [dd],
   data() {
     return {
       storeList: [
