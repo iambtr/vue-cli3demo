@@ -68,7 +68,7 @@ axios.defaults.timeout = 600000;
 axios.defaults.headers['Content-Type'] = 'application/json; charset=utf-8'
 axios.interceptors.request.use((config) => {
     store.commit('loading', true)
-    config.headers['token'] = sessionStorage.getItem('token') // 请求头带上token
+    config.headers['token'] = localStorage.getItem('token') // 请求头带上token
     return config;
 }, (error) => {
     // Do something with request error

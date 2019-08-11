@@ -1,5 +1,5 @@
 <template>
-    <div >
+    <div>
         <van-nav-bar
                 fixed
                 title="商户信息"
@@ -13,45 +13,45 @@
             <div class="box">
                 <div class="top flex">
                     <div class="flex-1 left">
-                        <div class="store-name">鲜康水果店-09087208</div>
+                        <div class="store-name">{{info.storeName}}-{{info.storeId}}</div>
                         <div class="flex">
                             <span class="visit">待认领</span>
-                            <span class="visit visit1">A</span>
+                            <span class="visit visit1">{{info.storeLevel}}</span>
                         </div>
                     </div>
                     <div class="right">
-                        <div class="flex flex-center">
+                        <div class="flex flex-center" @click="goTell(info.receiverMobile)">
                             <img :src="phone" alt/>
-                            <div class="name">张丽丽</div>
+                            <div class="name">{{info.receiverName}}</div>
                         </div>
                     </div>
                 </div>
                 <div class="flex flex-1 d6">
                     <img :src="position" alt="">
-                    <span class="km">13.3km </span>
-                    <span>杭州市拱墅区三墩路85号</span>
+                    <span class="km">{{info.distance}}km </span>
+                    <span>{{info.province}}{{info.city}}{{info.area}}{{info.address2}}{{info.address1}}{{info.address}}</span>
                 </div>
                 <div class="tip">未结算货单-禁止继续下单，请及时提示商户结算</div>
                 <div content="title">店铺基本信息</div>
                 <div class="items">
                     <div>
-                        <div class="money">3000.50</div>
+                        <div class="money">{{info.todayTotal}}</div>
                         <div class="disc">今日下单(元)</div>
                     </div>
                     <div>
-                        <div class="money">3000.50</div>
+                        <div class="money">{{info.customerPrice}}</div>
                         <div class="disc">客单价(元)</div>
                     </div>
                     <div>
-                        <div class="money">3000.50</div>
+                        <div class="money">{{info.frequency}}</div>
                         <div class="disc">近30天频次</div>
                     </div>
                     <div>
-                        <div class="money">3000.50</div>
+                        <div class="money">{{info.sku}}</div>
                         <div class="disc">近30天均SKU</div>
                     </div>
                     <div>
-                        <div class="money">3000.50</div>
+                        <div class="money">{{info.couponTotal}}</div>
                         <div class="disc">优惠券</div>
                     </div>
                 </div>
@@ -77,12 +77,12 @@
             <div class="more flex flex-between">
                 <div>最近7次订单评价</div>
                 <!--<div class="more1">查看更多-->
-                    <!--<van-icon name="arrow"></van-icon>-->
+                <!--<van-icon name="arrow"></van-icon>-->
                 <!--</div>-->
             </div>
             <div class="star-view">
                 <div class="star-item">
-                   <div>配送评价</div>
+                    <div>配送评价</div>
                     <van-rate
                             readonly
                             v-model="value"
@@ -113,20 +113,20 @@
                 cancelButtonColor="#666666"
                 confirm-button-color="#fff"
         >
-           <div class="flex choose-view">
-               <div class="choose-item"
-                    v-for="item,index in timeChoose" :key="index"
-                    :class="{'active':item.active}"
-                    @click="changeChooseItem(index)"
-               >
-                   <div class="choose-name">{{item.name}}</div>
-                   <div>{{item.value}}</div>
-               </div>
-           </div>
+            <div class="flex choose-view">
+                <div class="choose-item"
+                     v-for="item,index in timeChoose" :key="index"
+                     :class="{'active':item.active}"
+                     @click="changeChooseItem(index)"
+                >
+                    <div class="choose-name">{{item.name}}</div>
+                    <div>{{item.value}}</div>
+                </div>
+            </div>
         </van-dialog>
-        <van-button type="primary"  class="btn">拾取客户</van-button>
-        <van-button type="primary"  class="btn">去审核</van-button>
-        <van-button type="primary"  class="btn" @click.native="show=true">我要拜访</van-button>
+        <van-button type="primary" class="btn">拾取客户</van-button>
+        <van-button type="primary" class="btn">去审核</van-button>
+        <van-button type="primary" class="btn" @click.native="show=true">我要拜访</van-button>
     </div>
 </template>
 
@@ -137,26 +137,29 @@
     import fruit from '$img/fruit.png'
     import skuItem from './skuItem'
     import orderItem from './orderItem'
+
     export default {
-        mixins:[getYYR],
-        components:{skuItem,orderItem},
+        mixins: [getYYR],
+        components: {skuItem, orderItem},
         data() {
             return {
+                info: '',
+                storeKeyId: '',
                 phone,
                 position,
                 fruit,
                 value: 2.6,
-                show:false,
-                timeChoose:[
+                show: false,
+                timeChoose: [
                     {
-                        active:true,
-                        name:'今日拜访',
-                        value:this.getYYR(new Date())
+                        active: true,
+                        name: '今日拜访',
+                        value: this.getYYR(new Date())
                     },
                     {
-                        active:false,
-                        name:'明日拜访',
-                        value:this.getDate()
+                        active: false,
+                        name: '明日拜访',
+                        value: this.getDate()
                     }
                 ]
             }
@@ -165,21 +168,36 @@
             onClickRight() {
                 this.$router.push({name: 'visitList'})
             },
-            getDate(){
+            getDate() {
                 let now = new Date()
-                let t =  new Date((now/1000+86400)*1000)
+                let t = new Date((now / 1000 + 86400) * 1000)
                 console.log(t)
                 let now1 = this.getYYR(t)
                 return now1
             },
-            changeChooseItem(index){
-                this.timeChoose.map(item=>{
+            changeChooseItem(index) {
+                this.timeChoose.map(item => {
                     return item.active = false
                 })
                 this.timeChoose[index].active = true
+            },
+            getInfo() {
+                this.$get('/crm/store/storeInfo', {
+                    storeKeyId: this.storeKeyId,
+                    lng:localStorage.getItem('longitude'),
+                    lat:localStorage.getItem('latitude')
+                }).then(res => {
+                    if (res.code === 0) {
+                        this.info = res.data
+                    }
+                }).catch(err => {
+
+                })
             }
         },
         created() {
+            this.storeKeyId = this.$route.query.storeKeyId
+            this.getInfo()
         }
     }
 </script>
@@ -335,6 +353,7 @@
             color: #c1c1c1;
         }
     }
+
     .star-item {
         background: #ffffff;
         border-radius: 3px;
@@ -346,6 +365,7 @@
         align-items: center;
         margin-bottom: 10px;
     }
+
     .btn {
         width: 300px;
         position: fixed;
@@ -354,30 +374,35 @@
         margin-left: -150px;
         bottom: 10px;
     }
-    .choose-item{
-        width:128px;
-        height:60px;
-        background:rgba(250,250,250,1);
-        border-radius:3px;
-        border:1px solid rgba(229,229,229,1);
+
+    .choose-item {
+        width: 128px;
+        height: 60px;
+        background: rgba(250, 250, 250, 1);
+        border-radius: 3px;
+        border: 1px solid rgba(229, 229, 229, 1);
         display: flex;
         justify-content: center;
         align-items: center;
         flex-direction: column;
         color: #666;
-        .choose-name{
+
+        .choose-name {
             font-size: 14px;
         }
     }
-    .active{
-        color:#FF8339;
-        background: rgba(255,131,57,0.1);
-        border:1px solid rgba(255,131,57,0.3);
+
+    .active {
+        color: #FF8339;
+        background: rgba(255, 131, 57, 0.1);
+        border: 1px solid rgba(255, 131, 57, 0.3);
     }
-    .choose-item:first-child{
+
+    .choose-item:first-child {
         margin-right: 20px;
     }
-    .choose-view{
+
+    .choose-view {
         display: flex;
         justify-content: center;
         align-items: center;
