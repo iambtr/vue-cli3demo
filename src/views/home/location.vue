@@ -194,7 +194,7 @@
                 this.$post('/visit/crm/visitLog/signIn',
                     {
                         "address": this.mixins_address,
-                        "keyId": this.planId,
+                        "keyId": this.visitLog.keyId,
                         "latitude": this.mixins_latitude,
                         "longitude": this.mixins_longitude,
                         "type": type === 'in' ? 0 : 1
@@ -213,7 +213,7 @@
                     arr.push(item.content)
                 })
                 this.$post('/visit/crm/visitLog/finish', {
-                    "keyId": this.planId,
+                    "keyId": this.visitLog.keyId,
                     "visitPictures": arr,
                     "visitRemarks": this.remark
                 }).then(res => {
