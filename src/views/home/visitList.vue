@@ -31,7 +31,7 @@
                 <div class="list" v-for="item,index in list" :key="index">
                     <div class="flex flex-between title">
                         <div class="time">{{item.visitDt}}</div>
-                        <div class="visit visiting ">{{item.visitStus}}</div>
+                        <!--<div class="visit visiting ">{{item.visitStus}}</div>-->
                         <div v-if="item.visitStus == 0" class="visit">未拜访</div>
                         <div v-if="item.visitStus == 1" class="visit visited">已拜访</div>
                         <div v-if="item.visitStus == 2" class="visit visiting">拜访中</div>
