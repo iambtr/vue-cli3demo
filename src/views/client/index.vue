@@ -82,7 +82,7 @@
             <van-button
               type="primary"
               block
-              v-if="item.stat=='EXAMINING'||item.stat=='REEXAMINING'"
+              v-if="(item.stat=='EXAMINING'||item.stat=='REEXAMINING')&&item.serviceSales"
               @click="$router.push({name:'newUserReview',query:{keyId:item.keyId}})"
             >去审核</van-button>
             <van-button
@@ -112,7 +112,7 @@ export default {
     return {
       active: "my", //my 我的 sea公海
       filterValue: "orderDays", //生效的查询条件
-      orderDays: 30,
+      orderDays: "",
       orderDaysRange: [
         { text: "所有", value: "" },
         { text: "≤30天", value: 30 },

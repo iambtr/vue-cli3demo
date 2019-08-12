@@ -185,7 +185,7 @@ export default {
             let {pageInfo} = data.data
             this.storeList = this.storeList.concat(pageInfo.list.map(elt=>{
               elt.address = elt.storeAddress 
-              elt.stat = 1
+              elt.status = 1
               return elt
             })) 
             this.loading=false
