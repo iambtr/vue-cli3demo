@@ -17,7 +17,7 @@
             <div class="d5">
                 <div class="flex flex-1 d6">
                     <img :src="position" alt="">
-                    <span class="km">13.3km </span>
+                    <span class="km">{{distance}}km </span>
                     <span v-if="visitLog.entryAddress" class="van-ellipsis">{{visitLog.entryAddress}}</span>
                     <span v-else class="van-ellipsis">{{mixins_address}}</span>
 
@@ -35,9 +35,9 @@
                 <div class="d5">
                     <div class="flex flex-1 d6">
                         <img :src="position" alt="">
-                        <span class="km">13.3km </span>
-                        <span v-if="visitLog.exitAddress" class="van-ellipsis">{{visitLog.exitAddress}}</span>
-                        <span v-else class="van-ellipsis">{{mixins_address}}</span>
+                        <span class="km">{{distance}}km </span>
+                        <span v-if="visitLog.exitAddress" class="flex-1 van-ellipsis">{{visitLog.exitAddress}}</span>
+                        <span v-else class="flex-1 van-ellipsis">{{mixins_address}}</span>
                     </div>
                     <div class="flex flex-center d7" v-if="visitLog.entryDt&&!visitLog.exitDt"
                          @click="goRefresh('out')">
@@ -187,7 +187,7 @@
                 let s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) + Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
                 s = s * 6378.137;// EARTH_RADIUS;
                 s = Math.round(s * 10000) / 10000; //输出为公里
-                return s;
+                return s.toFixed(2);
             },
             async signIn(type) {
                 await this.getLocation()

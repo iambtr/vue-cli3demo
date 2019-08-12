@@ -47,7 +47,7 @@
                             <img :src="tell" alt="">
                             <div>{{item.contactName}}</div>
                         </div>
-                        <div class="flex-1" @click="getMap(mixins_longitude,mixins_latitude,mixins_address)">
+                        <div class="flex-1" @click="getMap(item.latiLongi.split(',')[1],item.latiLongi.split(',')[0],item.storeAddress)">
                             <img :src="location" alt="">
                             <div>定位</div>
                         </div>
