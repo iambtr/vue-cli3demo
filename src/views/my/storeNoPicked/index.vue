@@ -24,7 +24,7 @@
         :error.sync="error"
         error-text="请求失败，点击重新加载"
         finished-text="没有更多了"
-        @load="loadData"
+        @load="getStores"
       >
         <store-item v-for="store in storeList" :store="store" :key="store.id"></store-item>
       </van-list>
@@ -42,28 +42,34 @@
 <script>
 import storeItem from "./storeItem";
 import dd from "@/mixins/dd";
+import getYYR from "@/mixins/getYYR";
 export default {
-  mixins: [dd],
+  mixins: [dd,getYYR],
   data() {
     return {
       navs: [
         {
           active: true,
+          type: 0,
           name: "今日"
         },
         {
           active: false,
+          type: 1,
           name: "本周"
         },
         {
           active: false,
+          type: 2,
           name: "本月"
         },
         {
           active: false,
+          type: 3,
           name: "日期"
         }
       ],
+      newNavs: [],
       query: "",
       currentDate: new Date(),
       dateShow: false,
@@ -105,7 +111,7 @@ export default {
           updDt: "",
           updId: "",
           whCode: "",
-          contanctName: "张丽丽",
+          contactName: "张丽丽",
           status: "1", //1 已掉落 2 已拾取 3即将掉落
           // amount: 3000.5,
           // customerPrice: 1000.11,
@@ -115,12 +121,12 @@ export default {
           // check: true
         }
       ],
-      loading:false,
-      finished:true,
-      error:false,
-      form:{
-        currPage:1,
-        limit:10,
+      loading: false,
+      finished: true,
+      error: false,
+      form: {
+        currPage: 1,
+        limit: 10
       }
     };
   },
@@ -140,48 +146,76 @@ export default {
       this.$toast("菜单");
     },
     changeItem(item, inx) {
-      let newNavs = this.navs.map(elt => {
+      let newNavs =JSON.parse(JSON.stringify(this.navs)).map(elt => {
         elt.active = false;
         return elt;
       });
       newNavs[inx] = Object.assign({}, item, { active: true });
       if (inx === 3) {
         this.showDatePicker();
+        this.newNavs = newNavs;
+      } else {
+        this.navs = newNavs;
+        this.resetGetStores();
       }
-      this.navs = newNavs;
     },
-    showDatePicker(item, inx) {
+    showDatePicker(newNavs) {
       this.dateShow = true;
     },
     chooseDate(e) {
-      console.log(e);
       this.currentDate = e;
       this.dateShow = false;
+      this.navs = this.newNavs;
+      this.resetGetStores();
     },
-    getStores() {
-      let params = this.form
-      params.type = 1
-      if(params.type ===3){
-        params.longitude = 
-        params.latitude =this.mixins_latitude
-      }
-      this.$get("/store/crm/storesaleslog/listFallenDown",{
 
-      }).then(data => {
-        if (data.code == 0) {
-          console.log(data)
+    getStores() {
+      let params = this.form;
+      params.type = this.queryValue.type;
+      params.longitude = this.mixins_longitude;
+      params.latitude = this.mixins_latitude;
+      if (params.type === 3) {
+        params.startDate = this.getYYR(new Date(this.currentDate));
+        params.endDate = this.getYYR(new Date());
+      }
+      this.$get("/store/crm/storesaleslog/listFallenDown", params).then(
+        data => {
+          if (data.code == 0) {
+            console.log(data);
+            let {pageInfo} = data.data
+            this.storeList = this.storeList.concat(pageInfo.list.map(elt=>{
+              elt.address = elt.storeAddress 
+              elt.stat = 1
+              return elt
+            })) 
+            this.loading=false
+            if(pageInfo.nextPage){
+              this.form.currPage = pageInfo.nextPage
+            }else{
+              this.finished=true
+            }
+          }
         }
-      });
+      );
     },
-    loadData(){
-      console.log('加载数据')
-      this.getStores()
+    resetGetStores() {
+      console.log("加载数据");
+      this.form = {
+        currPage: 1,
+        limit: 10
+      };
+      this.storeList = [];
+      this.finished = false;
+      this.loading = false;
+      this.finished = true;
+      this.error = false;
+      this.getStores();
     }
   },
   created() {
-    this.getLoction(() => {
-      this.finished = false
-    })
+    this.getLocation(() => {
+      this.finished = false;
+    });
   }
 };
 </script>

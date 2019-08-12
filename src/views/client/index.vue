@@ -88,7 +88,7 @@
             <van-button
               type="primary"
               block
-              v-if="item.stat=='NORMAL'&&!item.serviceSales"
+              v-if="!item.serviceSales"
               @click="readyPickUp(item)"
             >拾取客户</van-button>
           </store-item>
@@ -114,7 +114,7 @@ export default {
       filterValue: "orderDays", //生效的查询条件
       orderDays: 30,
       orderDaysRange: [
-        { text: "所有", value: '' },
+        { text: "所有", value: "" },
         { text: "≤30天", value: 30 },
         { text: "≤15天", value: 15 },
         { text: "≤7天", value: 7 }
@@ -165,9 +165,9 @@ export default {
           name: "距离排序 "
         }
       ],
-      dateValue2: '',
+      dateValue2: "",
       dateRange2: [
-        { text: "所有", value: '' },
+        { text: "所有", value: "" },
         { text: "≤30天", value: 30 },
         { text: "≤15", value: 15 },
         { text: "≤7天", value: 7 }
@@ -175,7 +175,7 @@ export default {
       cityValue: "杭州市",
       cityRange: [
         { text: "杭州市", value: "杭州市" },
-        { text: "上海市", value: "上海市" },
+        { text: "上海市", value: "上海市" }
       ],
       //   列表
       loading: false,
@@ -328,6 +328,11 @@ export default {
               }
               return elt;
             });
+            this.finished=true
+
+          }else{
+            this.customers = []
+            this.finished=true
           }
         }
       });
@@ -336,10 +341,10 @@ export default {
       let params = {
         lat: Number(this.mixins_latitude),
         lng: Number(this.mixins_longitude),
-        city: this.cityValue,
+        city: this.cityValue
       };
-      if(this.dateValue2){
-        params.orderDays= this.dateValue2
+      if (this.dateValue2) {
+        params.orderDays = this.dateValue2;
       }
       this.$get("/crm/store/publicList", params).then(data => {
         if (data.code == 0) {
@@ -371,7 +376,10 @@ export default {
       this.$post("/store/crm/store/pickUp", {
         keyId: this.pickItem.keyId
       }).then(data => {
-        this.getSeaCustomers();
+        this.$toast.success("拾取成功");
+        setTimeout(() => {
+          this.getSeaCustomers();
+        }, 1500);
       });
     },
     storeNav(item) {
@@ -428,7 +436,7 @@ export default {
     loadData() {}
   },
   created() {
-    this.getLoction(() => {
+    this.getLocation(() => {
       let { type } = this.$route.query;
       switch (type) {
         case "all":
@@ -439,6 +447,8 @@ export default {
           this.filterValue = "orderStatus";
           this.getMyCustomers();
           break;
+        default:
+          this.getMyCustomers();
       }
     });
   }

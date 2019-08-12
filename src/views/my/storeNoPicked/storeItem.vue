@@ -49,7 +49,6 @@ export default {
   },
   data() {
     return {
-      img: require("./img/status" + this.store.status + ".png"),
       phonePop: false
     };
   },
