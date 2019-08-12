@@ -16,8 +16,8 @@
                 @cancel="onCancel"
         />
         <van-dropdown-menu class="dropdown">
-            <van-dropdown-item v-model="searchValues.visitDtType" :options="option1" @change="getList"/>
-            <van-dropdown-item v-model="searchValues.visitStus" :options="option2" @change="getList"/>
+            <van-dropdown-item v-model="searchValues.visitDtType" :options="option1" @change="onSearch"/>
+            <van-dropdown-item v-model="searchValues.visitStus" :options="option2" @change="onSearch"/>
         </van-dropdown-menu>
         <div class="list-container">
             <van-list
@@ -39,19 +39,19 @@
                     </div>
                     <div class="name">{{item.storeName}}-{{item.storeId}}</div>
                     <div class="position flex">
-                        <span class="kl">{{item.distance}}km</span>
-                        <span class="flex-1">{{item.storeAddress}}</span>
+                        <span class="kl">{{(item.distance/1000).toFixed(2)}}km</span>
+                        <span class="flex-1 van-ellipsis">{{item.storeAddress}}</span>
                     </div>
                     <div class="action-view flex flex-between">
                         <div class="flex-1" @click="goTell(item.contactMobile)">
                             <img :src="tell" alt="">
                             <div>{{item.contactName}}</div>
                         </div>
-                        <div class="flex-1">
+                        <div class="flex-1" @click="getMap(mixins_longitude,mixins_latitude,mixins_address)">
                             <img :src="location" alt="">
                             <div>定位</div>
                         </div>
-                        <div class="flex-1">
+                        <div class="flex-1" @click="$router.push({name:'location',query:{planId:item.keyId}})">
                             <img :src="sign" alt="">
                             <div>我要签到</div>
                         </div>
@@ -120,9 +120,10 @@
     import location from '$img/location.png'
     import sign from '$img/sign.png'
     import tell from '$img/tell.png'
-
+    import dd from '@/mixins/dd'
 
     export default {
+        mixins:[dd],
         data() {
             return {
                 location,
@@ -149,8 +150,8 @@
                     visitDtType: 0,
                     visitStus: '',
                     searchCondition: '',
-                    longitude:'',
-                    latitude:''
+                    longitude: '',
+                    latitude: ''
                 },
                 list: []
             }
@@ -158,14 +159,24 @@
         methods: {
             onSearch() {
                 this.searchValues.currPage = 1
+                this.list = []
                 this.getList()
             },
             onCancel() {
                 this.searchValues.searchCondition = ''
                 this.searchValues.currPage = 1
+                this.list = []
                 this.getList()
             },
-            getList() {
+            // getList1(){
+            //     this.searchValues.currPage = 1
+            //     this.list = []
+            //     this.getList()
+            // },
+            async getList() {
+                await this.getLocation()
+                this.searchValues.longitude = this.mixins_longitude
+                this.searchValues.latitude = this.mixins_latitude
                 this.$get('/visit/crm/visitPlan/getList', this.searchValues).then((res) => {
                     this.loading = false
                     this.list = [...this.list, ...res.data.pageInfo.list]
@@ -182,6 +193,7 @@
         },
         created() {
             // this.getList()
+            this.getLocation()
         }
     }
 </script>

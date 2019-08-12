@@ -18,8 +18,8 @@
                 <div class="flex flex-1 d6">
                     <img :src="position" alt="">
                     <span class="km">13.3km </span>
-                    <span v-if="visitLog.entryAddress">{{visitLog.entryAddress}}</span>
-                    <span v-else>{{mixins_address}}</span>
+                    <span v-if="visitLog.entryAddress" class="van-ellipsis">{{visitLog.entryAddress}}</span>
+                    <span v-else class="van-ellipsis">{{mixins_address}}</span>
 
                 </div>
                 <div class="flex flex-center d7" v-if="!visitLog.entryDt" @click="goRefresh('in')">
@@ -36,10 +36,11 @@
                     <div class="flex flex-1 d6">
                         <img :src="position" alt="">
                         <span class="km">13.3km </span>
-                        <span v-if="visitLog.exitAddress">{{visitLog.exitAddress}}</span>
-                        <span v-else>{{mixins_address}}</span>
+                        <span v-if="visitLog.exitAddress" class="van-ellipsis">{{visitLog.exitAddress}}</span>
+                        <span v-else class="van-ellipsis">{{mixins_address}}</span>
                     </div>
-                    <div class="flex flex-center d7" v-if="visitLog.entryDt&&!visitLog.exitDt" @click="goRefresh('out')">
+                    <div class="flex flex-center d7" v-if="visitLog.entryDt&&!visitLog.exitDt"
+                         @click="goRefresh('out')">
                         <img :src="refresh" alt="">
                     </div>
                 </div>
@@ -58,7 +59,8 @@
             </div>
         </div>
         <van-button type="primary" class="btn" v-if="!visitLog.entryDt" @click="signIn('in')">我已进店</van-button>
-        <van-button type="primary" class="btn" v-if="visitLog.entryDt&&!visitLog.exitDt"  @click="signIn('out')">我已离店</van-button>
+        <van-button type="primary" class="btn" v-if="visitLog.entryDt&&!visitLog.exitDt" @click="signIn('out')">我已离店
+        </van-button>
         <van-button type="primary" class="btn" v-if="visitLog.exitDt" @click="finishPlan">完成拜访</van-button>
     </div>
 </template>
@@ -69,8 +71,9 @@
     import camera from '$img/camera.png'
     import dd from '@/mixins/dd'
     import axios from 'axios'
+
     export default {
-        mixins:[dd],
+        mixins: [dd],
         data() {
             return {
                 position,
@@ -80,21 +83,20 @@
                 planId: '',
                 visitPlan: '',
                 visitLog: '',
-                remark:'',
-                km1:'',
-                km2:''
+                remark: '',
+                distance: '',
             }
         },
         methods: {
             beforeRead(file) {
                 console.log(file)
-                if(file.length>1){
+                if (file.length > 1) {
                     this.$toast('请选取一张图片')
                     return false
                 }
                 return true
             },
-            onRead(file){
+            onRead(file) {
                 this.confirm(file, 0)
             },
             confirm(file, index) {
@@ -133,12 +135,12 @@
                         'Content-Type': 'multipart/form-data'
                     }
                 }).then(res => {
-                    if(res.data.code === 0){
-                        this.fileList[this.fileList.length-1].content = res.data.data.url
+                    if (res.data.code === 0) {
+                        this.fileList[this.fileList.length - 1].content = res.data.data.url
                     }
                 }).catch(err => {
                     this.$toast.fail(err)
-                    this.fileList = this.fileList.slice(0,this.fileList.length-1)
+                    this.fileList = this.fileList.slice(0, this.fileList.length - 1)
                     this.$store.commit('loading', false)
                 })
             },
@@ -154,19 +156,20 @@
                     type: file.type
                 });
             },
-            async goRefresh(){
+            async goRefresh() {
                 await this.getLocation()
+                this.distance = this.geoDistance(this.visitPlan.latiLongi.split(',')[0],this.visitPlan.latiLongi.split(',')[1],this.mixins_latitude,this.mixins_longitude)
             },
             getVisitedInfo() {
+                this.$get('/visit/crm/visitLog/getDetail', {planId: this.planId}).then(res => {
+                    if (res.code === 0) {
+                        this.visitPlan = res.data.visitPlan
+                        this.visitLog = res.data.visitLog
+                    }
+                    this.distance = this.geoDistance(this.visitPlan.latiLongi.split(',')[0],this.visitPlan.latiLongi.split(',')[1],this.mixins_latitude,this.mixins_longitude)
+                }).catch(err => {
 
-                // this.$get('/visit/crm/visitLog/getDetail', {planId: this.planId}).then(res => {
-                //     if (res.code === 0) {
-                //         this.visitPlan = res.data.visitPlan
-                //         this.visitLog = res.data.visitLog
-                //     }
-                // }).catch(err => {
-                //
-                // })
+                })
             },
             getHours(time) {
                 let hours = time.getHours() > 9 ? time.getHours() : '0' + time.getHours()
@@ -186,7 +189,7 @@
                 s = Math.round(s * 10000) / 10000; //输出为公里
                 return s;
             },
-            async signIn(type){
+            async signIn(type) {
                 await this.getLocation()
                 this.$post('/visit/crm/visitLog/signIn',
                     {
@@ -194,38 +197,38 @@
                         "keyId": this.planId,
                         "latitude": this.mixins_latitude,
                         "longitude": this.mixins_longitude,
-                        "type": type==='in'? 0:1
+                        "type": type === 'in' ? 0 : 1
                     }
-                ).then(res=>{
-                    if(res.code ===0 ){
+                ).then(res => {
+                    if (res.code === 0) {
                         this.getVisitedInfo()
                     }
-                }).catch(err=>{
+                }).catch(err => {
 
                 })
             },
-            finishPlan(){
+            finishPlan() {
                 let arr = []
-                this.fileList.forEach(item=>{
+                this.fileList.forEach(item => {
                     arr.push(item.content)
                 })
-                this.$post('/visit/crm/visitLog/finish',{
+                this.$post('/visit/crm/visitLog/finish', {
                     "keyId": this.planId,
                     "visitPictures": arr,
                     "visitRemarks": this.remark
-                }).then(res=>{
-                    if(res.code===0){
+                }).then(res => {
+                    if (res.code === 0) {
                         this.$toast('完成拜访')
                         this.$router.back()
                     }
-                }).catch(err=>{
+                }).catch(err => {
 
                 })
             }
 
         },
-        created() {
-            this.getLocation()
+        async created() {
+            await this.getLocation()
             this.planId = this.$route.query.planId
             this.getVisitedInfo()
         }

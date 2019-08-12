@@ -81,4 +81,10 @@
         width: 26px;
         height: 26px;
     }
+    .van-dialog__confirm, .van-dialog__confirm:active{
+        color: #ffffff;
+    }
+    .van-dialog__cancel{
+        color: #999;
+    }
 </style>

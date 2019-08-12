@@ -14,44 +14,45 @@
             <div class="content flex">
                 <div class="flex flex-column flex-center">
                     <p>日活</p>
-                    <div><span class="red">15</span>/30</div>
+                    <div>{{homeInfo.living}}</div>
                 </div>
                 <div class="flex flex-column flex-center">
                     <p>销售排名</p>
-                    <div><span class="red">15</span>/30</div>
+                    <div>{{homeInfo.ranking}}</div>
                 </div>
                 <div class="flex flex-column flex-center">
                     <p>日均SKU</p>
-                    <div><span class="red">15</span>/30</div>
+                    <div>{{homeInfo.avgSKU}}</div>
                 </div>
                 <div class="flex flex-column flex-center">
                     <p>客单价</p>
-                    <div><span class="red">15</span>/30</div>
+                    <div>{{homeInfo.perCustomerTransaction}}</div>
                 </div>
                 <div class="flex flex-column flex-center">
                     <p>新开</p>
-                    <div><span class="red">15</span>/30</div>
+                    <div>{{homeInfo.newOpen}}</div>
                 </div>
                 <div class="flex flex-column flex-center">
                     <p>拜访</p>
-                    <div><span class="red">15</span>/30</div>
+                    <div>{{homeInfo.visit}}</div>
                 </div>
                 <div class="flex flex-column flex-center">
                     <p>注册</p>
-                    <div><span class="red">15</span>/30</div>
+                    <div>{{homeInfo.register}}</div>
                 </div>
             </div>
         </div>
         <van-popup
-                    position="bottom"
-                    v-model="showPopup"
-                   >
+                position="bottom"
+                v-model="showPopup"
+        >
             <van-datetime-picker
                     @confirm="confirm"
                     @cancel="cancel"
                     v-model="currentDate"
                     type="date"
                     :min-date="minDate"
+                    :max-date="maxDate"
                     :style="{ height: '30%' }"
             />
         </van-popup>
@@ -63,18 +64,20 @@
     export default {
         data() {
             return {
-                minDate: new Date(2019,7,15),
-                currentDate:new Date(),
-                showPopup:false,
+                homeInfo: '',
+                minDate: new Date(2019, 7, 1),
+                maxDate: '',
+                currentDate: new Date(),
+                showPopup: false,
                 screen: [
                     {
                         name: '今日',
                         active: true
                     },
-                    {
-                        name: '本周',
-                        active: false
-                    },
+                    // {
+                    //     name: '本周',
+                    //     active: false
+                    // },
                     {
                         name: '本月',
                         active: false
@@ -92,36 +95,64 @@
                     return item.active = false
                 })
                 this.screen[index].active = true
-                if(index===3){
+                if (index === 2) {
                     this.showPopup = true
                 }
+                if (index === 0) {
+                    this.getNow()
+                }
+                if (index === 1) {
+                    this.getInfo('month', new Date().valueOf())
+                }
             },
-            confirm(){
-
-            },
-            cancel(){
+            confirm(v) {
                 this.showPopup = false
+                this.getInfo('date', v.valueOf())
+            },
+            cancel() {
+                this.showPopup = false
+                this.choose(0)
+            },
+            getInfo(key, day) {
+                let url = key == 'month' ? '/store/crm/store/personalAchievementMonth' : '/store/crm/store/personalAchievementDay'
+                this.$get(url, {month: day}).then(res => {
+                    if (res.code === 0) {
+                        this.homeInfo = res.data.homePageVO
+                    }
+                }).catch(err => {
+
+                })
+            },
+            getNow() {
+                this.$get('/store/crm/store/homePage').then(res => {
+                    if (res.code === 0) {
+                        this.homeInfo = res.data.homePageVO
+                    }
+                }).catch(err => {
+
+                })
             }
         },
-        computed:{
-            homeInfo(){
-                return this.$store.state.homeInfo
-            }
-        },
+
         created() {
-            this.$store.dispatch('getHomeInfo')
+            let time = new Date()
+            let maxDate = new Date(time - 24 * 60 * 60 * 1000)
+            this.maxDate = maxDate
+            this.currentDate = maxDate
+            this.getNow()
         }
     }
 </script>
 
 <style scoped lang="less">
-    .view{
+    .view {
         height: 100%;
         width: 100%;
         position: absolute;
         left: 0;
         top: 0;
     }
+
     .container {
         /*height: 100%;*/
         padding-top: 10px;
@@ -147,15 +178,18 @@
                 color: #FF8239;
             }
         }
-        .content{
+
+        .content {
             padding: 20px;
             background: #ffffff;
             flex-wrap: wrap;
-            &>div{
+
+            & > div {
                 width: 50%;
                 height: 80px;
                 font-size: 18px;
                 color: #666;
+
                 p {
                     margin: 0;
                     font-size: 12px;
@@ -163,6 +197,7 @@
                     color: #A1AAB8;
                     padding-bottom: 5px;
                 }
+
                 div {
                     height: 20px;
                     line-height: 20px;
@@ -170,6 +205,7 @@
             }
         }
     }
+
     .red {
         color: #FF511D;
     }

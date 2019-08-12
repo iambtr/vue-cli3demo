@@ -9,7 +9,7 @@
         </van-nav-bar>
         <van-search
                 class="marginTop"
-                v-model="searchValue"
+                v-model="searchValues.queryWords"
                 placeholder="搜索门店/代码/联系人"
                 show-action
                 @search="onSearch"
@@ -21,6 +21,7 @@
                     :finished="finished"
                     :error.sync="error"
                     error-text="请求失败，点击重新加载"
+                    :immediate-check="false"
                     finished-text="没有更多了"
                     @load="getList"
             >
@@ -56,11 +57,11 @@
                         </div>
                         <div class="flex info-item">
                             <span> 配送方案：</span>
-                            <div class="flex-1" v-if="!item.disCode" @click="choosePlan(index)">
+                            <div class="flex-1" v-if="!item.distributionPlan" @click="choosePlan(index)">
                                 请选择
                             </div>
                             <div class="flex-1" v-else @click="choosePlan(index)">
-                                {{item.disName}}-{{item.disCode}}
+                                {{item.planName}}-{{item.distributionPlan}}
                             </div>
                         </div>
                         <div class="flex-between flex upload">
@@ -94,8 +95,8 @@
                             </div>
                         </div>
                         <div class="flex button-view flex-end">
-                            <van-button class="default-btn" size="small" type="default">拒绝</van-button>
-                            <van-button size="small" type="primary">通过</van-button>
+                            <van-button class="default-btn" size="small" type="default" @click.native="goFail">拒绝</van-button>
+                            <van-button size="small" type="primary" @click.native="goPass(item)">通过</van-button>
                         </div>
                     </div>
                 </div>
@@ -145,7 +146,8 @@
 
                 searchValues: {
                     currPage: 1,
-                    limit: 10
+                    limit: 10,
+                    queryWords:''
                 },
                 chooseIndex: '',
                 disList: [],
@@ -153,14 +155,55 @@
             }
         },
         methods: {
+            goPass(item){
+                this.$dialog.confirm({
+                    title: '是否确认通过',
+                    message: '审核通过后，请及时跟进商户'
+                }).then(() => {
+                    this.$put('/store/store/check',item).then(res=>{
+                        if(res.code === 0){
+                            this.$toast('已审核')
+                            this.list = []
+                            this.getList()
+                        }
+                    }).catch(err=>{
 
+                    })
+                }).catch(() => {
+                    this.$toast('已取消')
+                });
+
+            },
+            goFail(){
+                let text = ''
+                text = this.updateView?'信息更新申请将被拒绝':'注册申请将被拒绝'
+                this.$dialog.confirm({
+                    title: '是否确认不通过',
+                    message: text
+                }).then(() => {
+                    this.$put('/store/store/fail',{keyId:item.keyId}).then(res=>{
+                        if(res.code === 0){
+                            this.$toast('已拒绝')
+                            this.list = []
+                            this.getList()
+                        }
+                    }).catch(err=>{
+
+                    })
+                }).catch(() => {
+                    this.$toast('已取消')
+                });
+
+            },
             onSelect1(v) {
                 this.list[this.chooseIndex].whName = v.whName
                 this.list[this.chooseIndex].whCode = v.whCode
                 this.show1 = false
             },
             onSelect2(v) {
-
+                this.list[this.chooseIndex].planName = v.name
+                this.list[this.chooseIndex].distributionPlan = v.code
+                this.show2 = false
             },
             // beforeRead(file) {
             //     if (file.length > 1) {
@@ -176,10 +219,16 @@
             //
             // },
             onSearch() {
-
+                this.searchValues.currPage = 1
+                this.list = []
+                this.getList()
             },
             onCancel() {
-
+                this.searchValues.currPage = 1
+                this.list = []
+                //搜索条件未添加
+                this.searchValues.queryWords = ''
+                this.getList()
             },
             getList() {
                 let url = this.updateView ? '/store/crm/store/queryReexamining' : '/store/crm/store/queryExamining'
@@ -218,7 +267,7 @@
             getDisList() {
                 this.$get('/store/store/disList').then(res => {
                     this.disList = res.data.map(item => {
-                        item.name = item.NAME + '-' + item.CODE
+                        item.name = item.name + '-' + item.code
                         return item
                     })
 
@@ -244,12 +293,16 @@
         },
         created() {
             this.updateView = this.$route.query.p === 'new' ? false : true
-            // this.getList()
+            if(this.$route.query.storeId){
+                this.searchValues.queryWords = this.$route.query.storeId
+            }
+            this.getList()
             this.getWhCodeList()
             this.getDisList()
         }
     }
 </script>
+
 <style scoped lang="less">
     .icon-font {
         font-size: 20px;

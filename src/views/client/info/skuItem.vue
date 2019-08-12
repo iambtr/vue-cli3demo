@@ -2,10 +2,10 @@
 
     <div class="sku-item">
         <div class="flex flex-between">
-            <div class="disc">商品名称描述</div>
-            <div class="buy-time">购买次数：<span class="color">15</span></div>
+            <div class="disc">{{obj.goodsName}}</div>
+            <div class="buy-time">购买次数：<span class="color">{{obj.buyTimes}}</span></div>
         </div>
-        <div>单价：¥500.90 &nbsp;&nbsp; 代码：0000001</div>
+        <div>单价：&yen;{{obj.price}} &nbsp;&nbsp; 代码：{{obj.goodsCode}}</div>
     </div>
 
 </template>
