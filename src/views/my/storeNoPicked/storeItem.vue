@@ -6,7 +6,7 @@
         <div class="tags">
           <van-tag v-if="customer&&!store.serviceSales&&store.stat=='NORMAL'" color="#3CC8B6">待领取</van-tag>
           <van-tag v-if="customer" color="#FF8339">{{store.stat|statFilter}}</van-tag>
-          <van-tag v-if="customer" color="#FF8339">{{store.storeLevel}}</van-tag>
+          <van-tag v-if="customer&&store.storeLevel" color="#FF8339">{{store.storeLevel}}</van-tag>
           <van-tag v-if="store.status" :color="store.status|statusColorFilter">{{store.status|statusFilter}}</van-tag>
         </div>
       </div>

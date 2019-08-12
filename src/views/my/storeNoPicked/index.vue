@@ -18,7 +18,16 @@
       >{{item.name}}</div>
     </div>
     <div class="store-list">
-      <store-item v-for="store in storeList" :store="store" :key="store.id"></store-item>
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        :error.sync="error"
+        error-text="请求失败，点击重新加载"
+        finished-text="没有更多了"
+        @load="loadData"
+      >
+        <store-item v-for="store in storeList" :store="store" :key="store.id"></store-item>
+      </van-list>
     </div>
     <van-popup v-model="dateShow" position="bottom">
       <van-datetime-picker
@@ -105,7 +114,14 @@ export default {
           // coupon: 4,
           // check: true
         }
-      ]
+      ],
+      loading:false,
+      finished:true,
+      error:false,
+      form:{
+        currPage:1,
+        limit:10,
+      }
     };
   },
   computed: {
@@ -141,9 +157,32 @@ export default {
       console.log(e);
       this.currentDate = e;
       this.dateShow = false;
+    },
+    getStores() {
+      let params = this.form
+      params.type = 1
+      if(params.type ===3){
+        params.longitude = 
+        params.latitude =this.mixins_latitude
+      }
+      this.$get("/store/crm/storesaleslog/listFallenDown",{
+
+      }).then(data => {
+        if (data.code == 0) {
+          console.log(data)
+        }
+      });
+    },
+    loadData(){
+      console.log('加载数据')
+      this.getStores()
     }
   },
-  created() {}
+  created() {
+    this.getLoction(() => {
+      this.finished = false
+    })
+  }
 };
 </script>
 

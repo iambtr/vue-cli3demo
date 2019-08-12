@@ -5,26 +5,26 @@
     </div>
     <div class="item-body">
       <div class="info-item">
-        <div class="info-value">{{store.todayTotal}}</div>
+        <div class="info-value">{{store.todayTotal||0}}</div>
         <div class="info-name">今日下单(元)</div>
       </div>
       <div class="divider"></div>
       <div class="info-item">
-        <div class="info-value">{{store.customerPrice}}</div>
+        <div class="info-value">{{store.customerPrice||0}}</div>
         <div class="info-name">客单价(元)</div>
       </div>
       <div class="divider"></div>
       <div class="info-item">
-        <div class="info-value">{{store.frequency}}</div>
+        <div class="info-value">{{store.frequency||0}}</div>
         <div class="info-name">近30天频次</div>
       </div>
       <div class="info-item">
-        <div class="info-value">{{store.sku}}</div>
+        <div class="info-value">{{store.sku||0}}</div>
         <div class="info-name">近30天均SKU</div>
       </div>
       <div class="divider"></div>
       <div class="info-item">
-        <div class="info-value">{{store.couponTotal}}</div>
+        <div class="info-value">{{store.couponTotal||0}}</div>
         <div class="info-name">优惠券</div>
       </div>
     </div>

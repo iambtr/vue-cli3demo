@@ -114,6 +114,7 @@ export default {
       filterValue: "orderDays", //生效的查询条件
       orderDays: 30,
       orderDaysRange: [
+        { text: "所有", value: '' },
         { text: "≤30天", value: 30 },
         { text: "≤15天", value: 15 },
         { text: "≤7天", value: 7 }
@@ -164,20 +165,21 @@ export default {
           name: "距离排序 "
         }
       ],
-      dateValue2: 30,
+      dateValue2: '',
       dateRange2: [
+        { text: "所有", value: '' },
         { text: "≤30天", value: 30 },
         { text: "≤15", value: 15 },
         { text: "≤7天", value: 7 }
       ],
-      cityValue: "杭州",
+      cityValue: "杭州市",
       cityRange: [
-        { text: "杭州", value: "杭州" },
-        { text: "上海", value: "上海" },
+        { text: "杭州市", value: "杭州市" },
+        { text: "上海市", value: "上海市" },
       ],
       //   列表
       loading: false,
-      finished: false,
+      finished: true,
       error: false,
       customers: [
         {
@@ -335,8 +337,10 @@ export default {
         lat: Number(this.mixins_latitude),
         lng: Number(this.mixins_longitude),
         city: this.cityValue,
-        orderDays: this.dateValue2
       };
+      if(this.dateValue2){
+        params.orderDays= this.dateValue2
+      }
       this.$get("/crm/store/publicList", params).then(data => {
         if (data.code == 0) {
           let { list } = data.data;
