@@ -173,6 +173,7 @@
             //     this.list = []
             //     this.getList()
             // },
+
             async getList() {
                 await this.getLocation()
                 this.searchValues.longitude = this.mixins_longitude

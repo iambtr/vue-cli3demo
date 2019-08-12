@@ -292,6 +292,7 @@
 
     .d6 {
         align-items: center;
+        width: 100%;
     }
 
     .km {

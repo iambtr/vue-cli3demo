@@ -55,10 +55,11 @@ export default {
         getMap(longitude,latitude,title){
             this.$dd.ready(()=> {
                 this.$dd.biz.map.view({
-                    latitude:latitude,
-                    longitude:longitude,
+                    latitude:Number(latitude),
+                    longitude:Number(longitude),
                     title:title,
                     onFail : (err)=>{
+                        alert(err)
                         this.jsapi(this.getLocation)
                     }
                 })
@@ -73,8 +74,8 @@ export default {
                     useCache:true, //默认是true，如果需要频繁获取地理位置，请设置false
                     onSuccess : (result)=>{
                         callback()
-                        this.mixins_latitude = result.latitude
-                        this.mixins_longitude = result.longitude
+                        this.mixins_latitude = result.latitude.toFixed(6)
+                        this.mixins_longitude = result.longitude.toFixed(6)
                         this.mixins_address = result.address
                     },
                     onFail : (err)=>{
