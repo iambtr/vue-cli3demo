@@ -249,9 +249,8 @@
             }
         },
        async created() {
-            await this.getLocation()
-            this.storeKeyId = this.$route.query.storeKeyId
-            this.getInfo()
+           this.storeKeyId = this.$route.query.storeKeyId
+            await this.getLocation(this.getInfo)
         }
     }
 </script>

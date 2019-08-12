@@ -73,10 +73,10 @@ export default {
                     withReGeocode : true,
                     useCache:true, //默认是true，如果需要频繁获取地理位置，请设置false
                     onSuccess : (result)=>{
-                        callback()
                         this.mixins_latitude = result.latitude.toFixed(6)
                         this.mixins_longitude = result.longitude.toFixed(6)
                         this.mixins_address = result.address
+                        callback()
                     },
                     onFail : (err)=>{
                         this.jsapi(this.getLocation)

@@ -175,26 +175,29 @@
             // },
 
             async getList() {
-                await this.getLocation()
-                this.searchValues.longitude = this.mixins_longitude
-                this.searchValues.latitude = this.mixins_latitude
-                this.$get('/visit/crm/visitPlan/getList', this.searchValues).then((res) => {
-                    this.loading = false
-                    this.list = [...this.list, ...res.data.pageInfo.list]
-                    if (res.data.pageInfo.isLastPage) {
-                        this.finished = true
-                    } else {
-                        this.searchValues.currPage++
+                await this.getLocation(
+                    ()=>{
+                        this.searchValues.longitude = this.mixins_longitude
+                        this.searchValues.latitude = this.mixins_latitude
+                        this.$get('/visit/crm/visitPlan/getList', this.searchValues).then((res) => {
+                            this.loading = false
+                            this.list = [...this.list, ...res.data.pageInfo.list]
+                            if (res.data.pageInfo.isLastPage) {
+                                this.finished = true
+                            } else {
+                                this.searchValues.currPage++
+                            }
+                        }).catch(err => {
+                            console.log(err)
+                            this.error = true
+                        })
                     }
-                }).catch(err => {
-                    console.log(err)
-                    this.error = true
-                })
+                )
             },
         },
         created() {
             // this.getList()
-            this.getLocation()
+            // this.getLocation()
         }
     }
 </script>

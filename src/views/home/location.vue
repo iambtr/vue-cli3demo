@@ -157,8 +157,9 @@
                 });
             },
             async goRefresh() {
-                await this.getLocation()
-                this.distance = this.geoDistance(this.visitPlan.latiLongi.split(',')[0],this.visitPlan.latiLongi.split(',')[1],this.mixins_latitude,this.mixins_longitude)
+                await this.getLocation(()=>{
+                    this.distance = this.geoDistance(this.visitPlan.latiLongi.split(',')[0],this.visitPlan.latiLongi.split(',')[1],this.mixins_latitude,this.mixins_longitude)
+                })
             },
             getVisitedInfo() {
                 this.$get('/visit/crm/visitLog/getDetail', {planId: this.planId}).then(res => {
@@ -190,22 +191,24 @@
                 return s.toFixed(2);
             },
             async signIn(type) {
-                await this.getLocation()
-                this.$post('/visit/crm/visitLog/signIn',
-                    {
-                        "address": this.mixins_address,
-                        "keyId": this.visitLog.keyId,
-                        "latitude": this.mixins_latitude,
-                        "longitude": this.mixins_longitude,
-                        "type": type === 'in' ? 0 : 1
-                    }
-                ).then(res => {
-                    if (res.code === 0) {
-                        this.getVisitedInfo()
-                    }
-                }).catch(err => {
+                await this.getLocation(()=>{
+                    this.$post('/visit/crm/visitLog/signIn',
+                        {
+                            "address": this.mixins_address,
+                            "keyId": this.visitLog.keyId,
+                            "latitude": this.mixins_latitude,
+                            "longitude": this.mixins_longitude,
+                            "type": type === 'in' ? 0 : 1
+                        }
+                    ).then(res => {
+                        if (res.code === 0) {
+                            this.getVisitedInfo()
+                        }
+                    }).catch(err => {
 
+                    })
                 })
+
             },
             finishPlan() {
                 let arr = []
@@ -228,9 +231,8 @@
 
         },
         async created() {
-            await this.getLocation()
             this.planId = this.$route.query.planId
-            this.getVisitedInfo()
+            this.getLocation(this.getVisitedInfo)
         }
     }
 </script>
