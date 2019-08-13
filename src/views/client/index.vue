@@ -377,7 +377,6 @@ export default {
       this.pickPop = true;
     },
     pickUp(e) {
-      console.log(this.pickItem);
       this.pickPop = false;
       this.$post("/store/crm/store/pickUp", {
         keyId: this.pickItem.keyId

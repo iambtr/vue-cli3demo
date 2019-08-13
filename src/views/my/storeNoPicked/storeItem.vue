@@ -18,7 +18,7 @@
     </div>
     <div class="bottom" @click="navgationToCustomer(store)">
       <img src="./img/navigation.png" alt />
-      <span>{{store.distance}}km{{store.address}}{{store.address2}}</span>
+      <span>{{store.distance|distanceFilter}}km{{store.address}}{{store.address2}}</span>
     </div>
     <slot />
     <van-popup v-model="phonePop" round>
@@ -72,6 +72,9 @@ export default {
     statusColorFilter(val) {
       let stat = ["", "#A1AAB8", "#FF8239", "#A1AAB8","#3CC8B6"];
       return stat[Number(val)];
+    },
+    distanceFilter(val){
+      return (val/1000).toFixed(2)
     }
   },
   methods: {

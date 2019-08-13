@@ -10,21 +10,21 @@ export default [
                 path: '/my',
                 component: () => import('@/views/my/index')
             },
-            {
-                name: 'storeNoPicked',
-                path: '/my/storeNoPicked',
-                component: () => import('@/views/my/storeNoPicked/index')
-            },
-            {
-                name:'storePicked',
-                path:'/my/storePicked',
-                component: () => import('@/views/my/storePicked/index')
-            },
-            {
-                name:'storePickedPedding',
-                path:'/my/storePickedPedding',
-                component: () => import('@/views/my/storePickedPedding/index')
-            },
         ]
+    },
+    {
+        name: 'storeNoPicked',
+        path: '/my/storeNoPicked',
+        component: () => import('@/views/my/storeNoPicked/index')
+    },
+    {
+        name: 'storePicked',
+        path: '/my/storePicked',
+        component: () => import('@/views/my/storePicked/index')
+    },
+    {
+        name: 'storePickedPedding',
+        path: '/my/storePickedPedding',
+        component: () => import('@/views/my/storePickedPedding/index')
     },
 ]

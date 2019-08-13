@@ -13,14 +13,12 @@
     </div>
     <div class="nav">
       <div class="title">客户动态</div>
-      <div class="van-grid-body">
-        <van-grid :border="false">
-          <van-grid-item v-for="item in navs" :key="item.name" :to="item.link">
-            <img :src="item.icon" alt class="icon" />
-            <span class="badge" v-if="item.badge">{{item.badge|badgeFilter}}</span>
-            <div class="name">{{item.name}}</div>
-          </van-grid-item>
-        </van-grid>
+      <div class="grid-nav-body">
+        <router-link class="gird-nav-item" v-for="item in navs" :key="item.name" :to="item.link">
+          <img :src="item.icon" alt class="icon" />
+          <span class="badge" v-if="item.badge">{{item.badge|badgeFilter}}</span>
+          <div class="name">{{item.name}}</div>
+        </router-link>
       </div>
     </div>
   </div>
@@ -105,18 +103,13 @@ export default {
           this.realName = myStoresVO.realName;
         }
       });
-    },
+    }
   },
   created() {
     this.getMyStoresInfo();
   }
 };
 </script>
-<style>
-.van-grid-body .van-grid-item {
-  flex-basis: 24.9% !important;
-}
-</style>
 
 <style scoped lang="less">
 .body {
@@ -162,33 +155,46 @@ export default {
       color: rgba(51, 51, 51, 1);
       line-height: 20px;
       text-align: left;
+      margin-bottom: 10px;
     }
-    .icon {
-      width: 65px;
-      height: 65px;
+    .grid-nav-body {
+      display: flex;
+      flex-wrap: wrap;
     }
-    .badge {
-      position: absolute;
-      top: 18px;
-      right: 12px;
-      height: 19px;
-      background: rgba(255, 121, 91, 1);
-      font-weight: bolder;
-      border-radius: 3px 3px 3px 0px;
-      border: 1px solid rgba(255, 255, 255, 1);
-      height: 17px;
-      font-size: 12px;
-      font-weight: bolder;
-      color: rgba(255, 255, 255, 1);
-      line-height: 17px;
-      padding: 0 7px;
-    }
-    .name {
-      height: 17px;
-      font-size: 12px;
-      font-weight: 400;
-      color: rgba(102, 102, 102, 1);
-      line-height: 17px;
+    .gird-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 0 0 25%;
+      position: relative;
+      margin-bottom: 16px;
+      .icon {
+        width: 65px;
+        height: 65px;
+      }
+      .badge {
+        position: absolute;
+        top: 6px;
+        right: 12px;
+        height: 19px;
+        background: rgba(255, 121, 91, 1);
+        font-weight: bolder;
+        border-radius: 3px 3px 3px 0px;
+        border: 1px solid rgba(255, 255, 255, 1);
+        height: 17px;
+        font-size: 12px;
+        font-weight: bolder;
+        color: rgba(255, 255, 255, 1);
+        line-height: 17px;
+        padding: 0 7px;
+      }
+      .name {
+        height: 17px;
+        font-size: 12px;
+        font-weight: 400;
+        color: rgba(102, 102, 102, 1);
+        line-height: 17px;
+      }
     }
   }
 }
