@@ -157,8 +157,8 @@
                 });
             },
             async goRefresh() {
-                await this.getLocation(()=>{
-                    this.distance = this.geoDistance(this.visitPlan.latiLongi.split(',')[0],this.visitPlan.latiLongi.split(',')[1],this.mixins_latitude,this.mixins_longitude)
+                await this.getLocation(() => {
+                    this.distance = this.geoDistance(this.visitPlan.latiLongi.split(',')[0], this.visitPlan.latiLongi.split(',')[1], this.mixins_latitude, this.mixins_longitude)
                 })
             },
             getVisitedInfo() {
@@ -167,15 +167,16 @@
                         this.visitPlan = res.data.visitPlan
                         this.visitLog = res.data.visitLog
                     }
-                    this.distance = this.geoDistance(this.visitPlan.latiLongi.split(',')[0],this.visitPlan.latiLongi.split(',')[1],this.mixins_latitude,this.mixins_longitude)
+                    this.distance = this.geoDistance(this.visitPlan.latiLongi.split(',')[0], this.visitPlan.latiLongi.split(',')[1], this.mixins_latitude, this.mixins_longitude)
                 }).catch(err => {
 
                 })
             },
             getHours(time) {
-                let hours = time.getHours() > 9 ? time.getHours() : '0' + time.getHours()
-                let min = time.getMinutes() > 9 ? time.getMinutes() : '0' + time.getMinutes()
-                return hours + ':' + min
+                // let hours = time.getHours() > 9 ? time.getHours() : '0' + time.getHours()
+                // let min = time.getMinutes() > 9 ? time.getMinutes() : '0' + time.getMinutes()
+                // return hours + ':' + min
+                return time.substring(11,16)
             },
             rad(d) {
                 return d * Math.PI / 180.0;
