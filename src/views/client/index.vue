@@ -82,9 +82,15 @@
             <van-button
               type="primary"
               block
-              v-if="(item.stat=='EXAMINING'||item.stat=='REEXAMINING')&&item.serviceSales"
-              @click="$router.push({name:'newUserReview',query:{keyId:item.keyId}})"
+              v-if="item.stat=='EXAMINING'&&item.serviceSales"
+              @click="$router.push({name:'newUserReview',query:{storeId:item.keyId,p:'new'}})"
             >去审核</van-button>
+            <van-button
+              type="primary"
+              block
+              v-if="item.stat=='REEXAMINING'&&item.serviceSales"
+              @click="$router.push({name:'newUserReview',query:{storeId:item.keyId,p:'update'}})"
+            >重新审核</van-button>
             <van-button
               type="primary"
               block
