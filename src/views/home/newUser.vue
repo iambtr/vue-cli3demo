@@ -2,7 +2,7 @@
     <div>
         <van-nav-bar
                 fixed
-                title="新用户审核"
+                :title="title"
                 left-arrow
                 @click-left="onClickLeft"
         >
@@ -293,6 +293,7 @@
         },
         created() {
             this.updateView = this.$route.query.p === 'new' ? false : true
+            this.title = this.updateView?'信息更新审核':'新用户审核'
             if(this.$route.query.storeId){
                 this.searchValues.queryWords = this.$route.query.storeId
             }

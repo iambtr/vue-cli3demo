@@ -59,13 +59,12 @@ export default {
                     longitude:Number(longitude),
                     title:title,
                     onFail : (err)=>{
-                        alert(err)
                         this.jsapi(this.getLocation)
                     }
                 })
             })
         },
-       async getLocation(callback=()=>{}){
+       async getLocation(callback){
             this.$dd.ready(()=> {
                 this.$dd.device.geolocation.get({
                     targetAccuracy : 200,
