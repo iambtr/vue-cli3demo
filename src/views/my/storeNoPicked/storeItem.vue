@@ -89,10 +89,11 @@ export default {
     },
     navgationToCustomer(store) {
       let that = this;
+      let [latitude,longitude] = store.latiLongi.split(',')
       that.$dd.ready(function() {
         that.$dd.biz.map.view({
-          latitude: Number(store.latitude), // 纬度
-          longitude: Number(store.longitude), // 经度
+          latitude: Number(latitude), // 纬度
+          longitude: Number(longitude), // 经度
           title: store.name // 地址/POI名称
         });
       });
