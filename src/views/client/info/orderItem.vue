@@ -1,17 +1,16 @@
 <template>
     <div class="order-view">
         <div class="order-top flex-between flex">
-            <div>2019.7.24 下午09:59:27</div>
-            <div>已完成</div>
+            <div>{{obj.oprDt}}</div>
+            <div>{{getStat(obj.stat)}}</div>
         </div>
-        <div class="order-box flex flex-center">
-            <img :src="fruit" alt="">
-            <img :src="fruit" alt="">
-            <img :src="fruit" alt="">
-            <img :src="fruit" alt="">
-            共20件
+        <div class="order-box flex flex-between">
+            <div>
+                <img v-for="item,index in obj.goodsPicNameList" :src="item.picUrl" :alt="item.goodsName">
+            </div>
+            共{{obj.orderQty}}件
         </div>
-        <div class="really-pay">实付：<span class="money">&yen;23.30</span></div>
+        <div class="really-pay">实付：<span class="money">&yen;{{obj.cashTotal}}</span></div>
     </div>
 </template>
 
@@ -24,7 +23,38 @@
                 fruit
             }
         },
-        methods: {},
+        props: {
+            obj: Object
+        },
+        methods: {
+            getStat(stat) {
+
+                switch (stat) {
+                    case 'CREATED':
+                        return '待付款';
+                    case 'PAID':
+                        return '已付款';
+                    case 'SUBMIT':
+                        return '已提交';
+                    case 'PEPARE':
+                        return '备货中';
+                    case 'CANCEL':
+                        return '已取消';
+                    case 'REFUND':
+                        return '已退款';
+                    case 'DELIVERY':
+                        return '配送中';
+                    case 'DELAYPAY':
+                        return '货到待付款';
+                    case 'DISPARITY':
+                        return '差价待处理';
+                    case 'FINISH':
+                        return '已完成';
+                    default:
+                        return ''
+                }
+            }
+        },
         created() {
         }
     }
@@ -36,6 +66,7 @@
         border-radius: 3px;
         background: #ffffff;
         margin-bottom: 10px;
+
         .order-top {
             color: #666;
         }
@@ -48,6 +79,7 @@
             margin: 10px 0;
             font-size: 12px;
             color: #666;
+            align-items: center;
 
             img {
                 width: 56px;

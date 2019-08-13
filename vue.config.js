@@ -10,7 +10,7 @@ module.exports = {
     lintOnSave: false,
     devServer: {
         proxy: 'http://120.26.50.233:8186/xftob-server'
-        // proxy:'http://10.128.16.134:8087/xftob-server'
+        // proxy:'http://10.128.12.72:8087/xftob-server'
     },
     chainWebpack: (config) => {
         config.resolve.alias

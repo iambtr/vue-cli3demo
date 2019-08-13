@@ -5,13 +5,13 @@
         />
         <div class="flex  flex-column top ">
             <div class="">订单总额</div>
-            <div class="money">12091.62 <span class="yuan">元</span></div>
+            <div class="money">{{homeInfo.orderTotal}} <span class="yuan">元</span></div>
             <van-progress class="progress"
                           :show-pivot="false"
                           color="#fff"
                           :percentage="percent"
             />
-            <div>当日进货指标:20000.00</div>
+            <div>当日进货指标:{{homeInfo.zb}}</div>
         </div>
         <div class="mid padding10 flex">
             <div class="flex flex-column flex-center">

@@ -15,8 +15,11 @@
                     <div class="flex-1 left">
                         <div class="store-name">{{info.storeName}}-{{info.storeId}}</div>
                         <div class="flex">
-                            <span class="visit">待认领</span>
-                            <span class="visit visit1">{{info.storeLevel}}</span>
+                            <span class="visit" v-if="!info.serviceSales">待认领</span>
+                            <span class="visit" v-else>已认领</span>
+                            <span class="visit visit1" v-if="info.serviceSales&&(info.stat==='EXAMINING'||info.stat==='REEXAMINING')">待审核</span>
+                            <span class="visit visit1" v-if="info.stat==='CANCEL'||info.stat==='FAILED'">失效</span>
+                            <span class="visit visit1" v-if="info.storeLevel">{{info.storeLevel}}</span>
                         </div>
                     </div>
                     <div class="right">
@@ -28,81 +31,79 @@
                 </div>
                 <div class="flex flex-1 d6">
                     <img :src="position" alt="">
-                    <span class="km">{{info.distance}}km </span>
-                    <span>{{info.province}}{{info.city}}{{info.area}}{{info.address2}}{{info.address1}}{{info.address}}</span>
+                    <span class="km">{{(info.distance/1000).toFixed(2)}}km </span>
+                    <span class="van-ellipsis">{{info.city}}{{info.area}}{{info.address2}}{{info.address1}}{{info.address}}</span>
                 </div>
                 <div class="tip">未结算货单-禁止继续下单，请及时提示商户结算</div>
                 <div content="title">店铺基本信息</div>
                 <div class="items">
                     <div>
-                        <div class="money">{{info.todayTotal}}</div>
+                        <div class="money">{{info.todayTotal||'0'}}</div>
                         <div class="disc">今日下单(元)</div>
                     </div>
                     <div>
-                        <div class="money">{{info.customerPrice}}</div>
+                        <div class="money">{{info.customerPrice||'--'}}</div>
                         <div class="disc">客单价(元)</div>
                     </div>
                     <div>
-                        <div class="money">{{info.frequency}}</div>
+                        <div class="money">{{info.frequency||'--'}}</div>
                         <div class="disc">近30天频次</div>
                     </div>
                     <div>
-                        <div class="money">{{info.sku}}</div>
+                        <div class="money">{{info.sku||'--'}}</div>
                         <div class="disc">近30天均SKU</div>
                     </div>
                     <div>
-                        <div class="money">{{info.couponTotal}}</div>
+                        <div class="money">{{info.couponTotal||'--'}}</div>
                         <div class="disc">优惠券</div>
                     </div>
                 </div>
             </div>
-            <div class="more flex flex-between" @click="$router.push({name:'skuList'})">
+            <div v-if="skuList[0]" class="more flex flex-between" @click="$router.push({name:'skuList',storeKeyId})">
                 <div>近30天购买SKU</div>
                 <div class="more1">查看更多
                     <van-icon name="arrow"></van-icon>
                 </div>
             </div>
             <div class="sku-view">
-                <skuItem></skuItem>
-                <skuItem></skuItem>
+                <skuItem  v-for="item,index in skuList" :key="index" :obj="item"></skuItem>
             </div>
-            <div class="more flex flex-between" @click="$router.push({name:'orderList'})">
+            <div v-if="orderList" class="more flex flex-between" @click="$router.push({name:'orderList',storeKeyId})">
                 <div>近30天订单记录</div>
                 <div class="more1">查看更多
                     <van-icon name="arrow"></van-icon>
                 </div>
             </div>
-
-            <orderItem></orderItem>
-            <div class="more flex flex-between">
+            <orderItem v-if="orderList" :obj="orderList"></orderItem>
+            <div v-if="appraiseList" class="more flex flex-between">
                 <div>最近7次订单评价</div>
                 <!--<div class="more1">查看更多-->
                 <!--<van-icon name="arrow"></van-icon>-->
                 <!--</div>-->
             </div>
-            <div class="star-view">
+            <div v-if="appraiseList" class="star-view">
                 <div class="star-item">
-                    <div>配送评价</div>
-                    <van-rate
-                            readonly
-                            v-model="value"
-                            :size="23"
-                            color="#FF8239"
-                            void-icon="star"
-                            void-color="#eee"
-                    />
+                <div>配送评价</div>
+                <van-rate
+                readonly
+                v-model="appraiseList.deliveryLevel"
+                :size="23"
+                color="#FF8239"
+                void-icon="star"
+                void-color="#eee"
+                />
                 </div>
                 <div class="star-item">
-                    <div>品质评价</div>
-                    <van-rate
-                            readonly
-                            allow-half
-                            v-model="value"
-                            :size="23"
-                            color="#FF8239"
-                            void-icon="star"
-                            void-color="#eee"
-                    />
+                <div>品质评价</div>
+                <van-rate
+                readonly
+                allow-half
+                v-model="appraiseList.qualityLevel"
+                :size="23"
+                color="#FF8239"
+                void-icon="star"
+                void-color="#eee"
+                />
                 </div>
             </div>
         </div>
@@ -112,6 +113,7 @@
                 show-cancel-button
                 cancelButtonColor="#666666"
                 confirm-button-color="#fff"
+                @confirm="confirmDate"
         >
             <div class="flex choose-view">
                 <div class="choose-item"
@@ -124,9 +126,9 @@
                 </div>
             </div>
         </van-dialog>
-        <van-button type="primary" class="btn">拾取客户</van-button>
-        <van-button type="primary" class="btn">去审核</van-button>
-        <van-button type="primary" class="btn" @click.native="show=true">我要拜访</van-button>
+        <van-button type="primary" class="btn" v-if="!info.serviceSales" @click.native="pickUp(info.keyId)">拾取客户</van-button>
+        <van-button type="primary" class="btn" v-if="info.serviceSales&&(info.stat==='EXAMINING'||info.stat==='REEXAMINING')" @click.native="goSh(info.stat,info.storeId)">去审核</van-button>
+        <van-button type="primary" class="btn" v-if="info.serviceSales&&info.stat==='NORMAL'" @click.native="show=true">我要拜访</van-button>
     </div>
 </template>
 
@@ -137,9 +139,9 @@
     import fruit from '$img/fruit.png'
     import skuItem from './skuItem'
     import orderItem from './orderItem'
-
+    import dd from '@/mixins/dd'
     export default {
-        mixins: [getYYR],
+        mixins: [getYYR,dd],
         components: {skuItem, orderItem},
         data() {
             return {
@@ -150,14 +152,19 @@
                 fruit,
                 value: 2.6,
                 show: false,
+                skuList:[],
+                orderList:'',
+                appraiseList:'',
                 timeChoose: [
                     {
                         active: true,
+                        type:'0',
                         name: '今日拜访',
                         value: this.getYYR(new Date())
                     },
                     {
                         active: false,
+                        type:'1',
                         name: '明日拜访',
                         value: this.getDate()
                     }
@@ -167,6 +174,40 @@
         methods: {
             onClickRight() {
                 this.$router.push({name: 'visitList'})
+            },
+            pickUp(keyId){
+                this.$dialog.confirm({
+                    title: '提示',
+                    message: '是否拾取该用户'
+                }).then(() => {
+                    this.$post('/store/crm/store/pickUp',{keyId}).then(res=>{
+                        if(res.code===0){
+                            this.$toast('拾取成功')
+                            this.getInfo()
+                        }
+                    }).catch(err=>{
+
+                    })
+                }).catch(() => {
+                    this.$toast('已取消')
+                });
+
+            },
+            confirmDate(){
+                let visitDtType = ''
+                this.timeChoose.forEach(item=>{
+                    if(item.active){
+                        visitDtType = item.type
+                    }
+                })
+                this.$post('/visit/crm/visitPlan/addPlan',{storeKeyId:this.storeKeyId,visitDtType}).then(res=>{
+                   if(res.code === 0){
+                       this.$toast('已添加')
+
+                   }
+                }).catch(err=>{
+
+                })
             },
             getDate() {
                 let now = new Date()
@@ -184,20 +225,32 @@
             getInfo() {
                 this.$get('/crm/store/storeInfo', {
                     storeKeyId: this.storeKeyId,
-                    lng:localStorage.getItem('longitude'),
-                    lat:localStorage.getItem('latitude')
+                    lng:this.mixins_longitude?this.mixins_longitude:120.21937542,
+                    lat:this.mixins_latitude?this.mixins_latitude:30.25924446
                 }).then(res => {
                     if (res.code === 0) {
-                        this.info = res.data
+                        this.info = res.data.storeInfo.storeCrmVo
+                        this.skuList = res.data.storeInfo.skuDTOS
+                        this.orderList = res.data.storeInfo.pageVO
+                        this.appraiseList= res.data.storeInfo.appraiseDTO
+                        console.log(this.info)
                     }
                 }).catch(err => {
 
                 })
+            },
+            goSh(stat,storeId){
+                if(stat === 'EXAMINING'){
+                    this.$router.push({name:'newUserReview',query:{p:'new',storeId}})
+                }
+                if(stat === 'REEXAMINING'){
+                    this.$router.push({name:'newUserReview',query:{p:'update',storeId}})
+                }
             }
         },
-        created() {
-            this.storeKeyId = this.$route.query.storeKeyId
-            this.getInfo()
+       async created() {
+           this.storeKeyId = this.$route.query.storeKeyId
+            await this.getLocation(this.getInfo)
         }
     }
 </script>
